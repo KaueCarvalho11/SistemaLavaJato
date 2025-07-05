@@ -1,5 +1,3 @@
-package main.sistemalavajato.model;
-
 public class Cliente {
     //atributos
     private String endereco;
