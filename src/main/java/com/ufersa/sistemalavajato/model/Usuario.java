@@ -1,3 +1,5 @@
+package com.ufersa.sistemalavajato.model;
+
 public abstract class Usuario {
 
     private String id;
@@ -52,5 +54,5 @@ public abstract class Usuario {
     public String toString() {
         return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + "]";
     }
-    
+
 }

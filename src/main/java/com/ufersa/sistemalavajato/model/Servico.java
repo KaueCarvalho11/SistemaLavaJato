@@ -1,3 +1,5 @@
+package com.ufersa.sistemalavajato.model;
+
 public class Servico {
 
     private int idServico;
