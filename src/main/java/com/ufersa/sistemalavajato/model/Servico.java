@@ -19,32 +19,6 @@ public class Servico {
         this.funcionario = funcionario;
     }
 
-    // --- Métodos (CRUD / Ações) ---
-    public void iniciarServico() {
-        // Implementação virá aqui
-    }
-
-    public void cancelarServico() {
-        // Implementação virá aqui
-    }
-
-    public void concluirServico() {
-        // Implementação virá aqui
-    }
-
-    public void atualizarServico() {
-        // Implementação virá aqui
-    }
-
-    public String listarServicosRealizados() {
-        // Implementação virá aqui
-        return null;
-    }
-
-    public String exibirServicoAtual() {
-        // Implementação virá aqui
-        return null;
-    }
 
     // --- Getters e Setters ---
     public int getIdServico() {
