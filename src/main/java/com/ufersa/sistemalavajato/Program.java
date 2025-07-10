@@ -1,4 +1,4 @@
-package main.sistemalavajato;
+package com.ufersa.sistemalavajato;
 
 public class Program {
     public static void main(String[] args) {
