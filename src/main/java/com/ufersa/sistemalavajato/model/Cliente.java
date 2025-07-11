@@ -1,16 +1,17 @@
+package com.ufersa.sistemalavajato.model;
+
 public class Cliente {
-    //atributos
+    // atributos
     private String endereco;
     private int numeroTelefone;
 
-    //construtor
+    // construtor
     public Cliente(String endereco, int numeroTelefone) {
-
         this.endereco = endereco;
         this.numeroTelefone = numeroTelefone;
     }
 
-    //metodos getters e setters
+    // metodos getters e setters
     public String getEndereco() {
         return endereco;
     }
@@ -27,36 +28,26 @@ public class Cliente {
         this.numeroTelefone = numeroTelefone;
     }
 
-    //metodos CRUD
-
-    //Cadastrar um cliente
-    public void cadastraCliente(){
-
+    // metodos CRUD
+    public void cadastraCliente() {
     }
 
-    //Remover um clinte
-    public void removeCliente(){
-
+    public void removeCliente() {
     }
 
-    //Atualizar um cliente
-    public void atualizaCliente(){
-
+    public void atualizaCliente() {
     }
 
-    //Listar todos os clientes
-    public String listarCliente(){
+    public String listarCliente() {
         return "Cliente não encontrado";
     }
 
-    //Exibe um cliente especifico 
-    public String exibirCliente(){
+    public String exibirCliente() {
         return "Cliente nao encontrado";
     }
 
-    //métodos auxiliares
-    public String toString(){
+    // métodos auxiliares
+    public String toString() {
         return "Endereço: " + endereco + " Numero de telefone: " + numeroTelefone;
     }
-
 }
