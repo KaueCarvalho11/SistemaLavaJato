@@ -52,12 +52,20 @@ public class FuncionarioRepository extends BaseRepository<Funcionario> {
         return findOne(sql, this::mapResultSetToFuncionario, id);
     }
 
-    public Funcionario findByEmail(String email) throws SQLException {
+    public Funcionario EncontrarPorEmail(String email) throws SQLException {
     String sql = "SELECT u.* FROM usuarios u " +
                  "JOIN funcionarios f ON u.id = f.id_usuario " +
                  "WHERE u.email = ?";
     
-    return findOne(sql, this::mapResultSetToFuncionario, email);
+    return findOne(sql, (rs) -> {
+        // Aqui a gente monta um funcionário com os dados do banco
+        return new Funcionario(
+            rs.getString("id"),
+            rs.getString("nome"),
+            rs.getString("email"),
+            rs.getString("senha") 
+        );
+    }, email);
     }
 
     @Override

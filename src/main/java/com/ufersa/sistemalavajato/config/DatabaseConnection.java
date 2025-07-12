@@ -243,9 +243,6 @@ public class DatabaseConnection {
             public void execute(Statement statement) throws SQLException {
                 String sql = "CREATE TABLE IF NOT EXISTS funcionarios (" +
                         "id_usuario TEXT PRIMARY KEY, " +
-                        "cargo TEXT, " +
-                        "salario REAL, " +
-                        "data_admissao DATE, " +
                         "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                         "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                         "FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE" +
@@ -364,8 +361,7 @@ public class DatabaseConnection {
                     statement.execute(insertAdmin);
 
                     // Insere funcionário admin
-                    String insertFuncionario = "INSERT INTO funcionarios (id_usuario, cargo, salario, data_admissao) " +
-                            "VALUES ('admin', 'Administrador', 5000.00, date('now'))";
+                    String insertFuncionario = "INSERT INTO funcionarios (id_usuario) VALUES ('admin')";
                     statement.execute(insertFuncionario);
 
                     System.out.println("Usuário admin criado - Email: admin@lavajato.com | Senha: admin123");
