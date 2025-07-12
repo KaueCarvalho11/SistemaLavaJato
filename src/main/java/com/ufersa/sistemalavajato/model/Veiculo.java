@@ -2,6 +2,7 @@ package com.ufersa.sistemalavajato.model;
 
 public class Veiculo {
     // Atributos
+    private String idCliente;   
     private String modelo;
     private int numChassi;
     private double quilometragem;
@@ -11,8 +12,8 @@ public class Veiculo {
     private String status;
 
     // Construtor
-    public Veiculo(String modelo, int numChassi, double quilometragem, double preco, String cor, int anoFabricacao,
-            String status) {
+    public Veiculo(String idCliente, String modelo, int numChassi, double quilometragem, double preco, String cor, int anoFabricacao, String status) {
+        this.idCliente =idCliente;
         this.modelo = modelo;
         this.numChassi = numChassi;
         this.quilometragem = quilometragem;
@@ -20,9 +21,16 @@ public class Veiculo {
         this.cor = cor;
         this.anoFabricacao = anoFabricacao;
         this.status = status;
-    }
+    }   
 
     // Getters e Setters
+    public String getIdCliente(){
+        return idCliente;
+    }
+
+    public void setIdCliente(String idCliente){
+        this.idCliente = idCliente;
+    }
     public String getModelo() {
         return modelo;
     }
@@ -82,8 +90,6 @@ public class Veiculo {
     // Método auxiliar
     @Override
     public String toString() {
-        return "Veiculo{modelo = " + modelo + ", numChassi = " + numChassi + ", quilometragem = " + quilometragem
-                + ", preco = " + preco + ", cor = " + cor + ", anoFabricacao = " + anoFabricacao + ", status = "
-                + status + "}";
+        return "Veiculo{idCliente = " + idCliente + "modelo = " + modelo + ", numChassi = " + numChassi + ", quilometragem = " + quilometragem + ", preco = " + preco + ", cor = " + cor + ", anoFabricacao = " +anoFabricacao + ", status = " + status + "}";
     }
 }

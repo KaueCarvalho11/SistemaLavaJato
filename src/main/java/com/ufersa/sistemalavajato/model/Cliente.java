@@ -1,11 +1,5 @@
 package com.ufersa.sistemalavajato.model;
 
-/**
- * Representa um Cliente do lava-jato.
- * Herda todos os atributos de um Usuário e adiciona informações específicas
- * como endereço e telefone.
- * É uma classe de modelo (POJO), focada em armazenar e fornecer dados.
- */
 public class Cliente extends Usuario {
 
     // Atributos específicos do Cliente
