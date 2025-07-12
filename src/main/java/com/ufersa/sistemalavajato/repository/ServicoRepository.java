@@ -93,7 +93,7 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "WHERE s.status = ? " +
                 "ORDER BY s.data_criacao DESC";
-
+        
         return findMany(sql, this::mapResultSetToServico, status);
     }
 
@@ -109,7 +109,7 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "WHERE s.tipo = ? " +
                 "ORDER BY s.data_criacao DESC";
-
+        
         return findMany(sql, this::mapResultSetToServico, tipo);
     }
 
@@ -141,9 +141,10 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "WHERE s.id_funcionario = ? " +
                 "ORDER BY s.data_criacao DESC";
-
+        
         return findMany(sql, this::mapResultSetToServico, funcionarioId);
     }
+
 
     /**
      * Atualiza o status de um serviço.
@@ -213,19 +214,20 @@ public class ServicoRepository extends BaseRepository<Servico> {
         Funcionario funcionario = null;
         if (rs.getString("funcionario_id") != null) {
             funcionario = new Funcionario(
-                    rs.getString("funcionario_id"),
-                    rs.getString("funcionario_nome"),
-                    "", // email - não está na consulta
-                    "" // senha - não deveria estar na consulta
+                rs.getString("funcionario_id"),
+                rs.getString("funcionario_nome"),
+                "", // email - não está na consulta
+                ""  // senha - não deveria estar na consulta
             );
         }
 
         // Cria o serviço
         Servico servico = new Servico(
-                rs.getInt("id_servico"),
-                rs.getString("tipo"),
-                veiculo,
-                funcionario);
+            rs.getInt("id_servico"),
+            rs.getString("tipo"),
+            veiculo,
+            funcionario
+        );
 
         // Define outros atributos
         servico.setDescricao(rs.getString("descricao"));

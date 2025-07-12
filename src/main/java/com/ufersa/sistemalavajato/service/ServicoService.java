@@ -21,8 +21,8 @@ public class ServicoService {
     /**
      * Cadastra um novo serviço.
      */
-    public void cadastrarServico(String tipo, String descricao, double preco,
-            Veiculo veiculo, Funcionario funcionario) throws SQLException {
+    public void cadastrarServico(String tipo, String descricao, double preco, 
+                                Veiculo veiculo, Funcionario funcionario) throws SQLException {
         // Validações
         if (tipo == null || tipo.trim().isEmpty()) {
             throw new IllegalArgumentException("Tipo do serviço não pode ser vazio");
@@ -107,8 +107,8 @@ public class ServicoService {
     /**
      * Atualiza informações de um serviço.
      */
-    public void atualizarServico(int servicoId, String tipo, String descricao,
-            double preco, String formaPagamento) throws SQLException {
+    public void atualizarServico(int servicoId, String tipo, String descricao, 
+                                double preco, String formaPagamento) throws SQLException {
         // Busca o serviço
         Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (servico == null) {
@@ -198,7 +198,7 @@ public class ServicoService {
         if (precoMin < 0 || precoMax < 0 || precoMin > precoMax) {
             throw new IllegalArgumentException("Faixa de preço inválida");
         }
-
+        
         // Como não temos o método no repository, vamos buscar todos e filtrar
         List<Servico> todosServicos = servicoRepository.findAll();
         return todosServicos.stream()
