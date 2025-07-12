@@ -19,7 +19,6 @@ public class Servico {
         this.funcionario = funcionario;
     }
 
-
     // --- Getters e Setters ---
     public int getIdServico() {
         return idServico;
