@@ -11,13 +11,13 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
 
     @Override
     public void save(Usuario usuario) throws SQLException {
-        String sql = "INSERT INTO usuarios (id, nome, email, senha_hash) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (id, nome, email, senha) VALUES (?, ?, ?, ?)";
 
         executeUpdate(sql,
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getSenhaHash());
+                usuario.getSenha());
     }
 
     @Override
@@ -28,12 +28,12 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
 
     @Override
     public void update(Usuario usuario) throws SQLException {
-        String sql = "UPDATE usuarios SET nome = ?, email = ?, senha_hash = ? WHERE id = ?";
+        String sql = "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?";
 
         executeUpdate(sql,
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getSenhaHash(),
+                usuario.getSenha(),
                 usuario.getId());
     }
 
@@ -97,66 +97,30 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
         return exists(sql, email);
     }
 
+  
     /**
-     * Verifica se um email já está em uso por outro usuário.
+     * Atualiza apenas a senha do usuário.
      * 
-     * @param email     Email a ser verificado
-     * @param excludeId ID do usuário a ser excluído da verificação
-     * @return true se já existe, false caso contrário
+     * @param id    ID do usuário
+     * @param senha Nova senha
      * @throws SQLException Se houver erro na operação
      */
-    public boolean existsByEmailExcludingId(String email, String excludeId) throws SQLException {
-        String sql = "SELECT 1 FROM usuarios WHERE email = ? AND id != ?";
-        return exists(sql, email, excludeId);
-    }
-
-    /**
-     * Conta o total de usuários.
-     * 
-     * @return Número total de usuários
-     * @throws SQLException Se houver erro na operação
-     */
-    public int countAll() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM usuarios";
-        return count(sql);
-    }
-
-    /**
-     * Atualiza apenas a senha hash do usuário.
-     * 
-     * @param id        ID do usuário
-     * @param senhaHash Nova senha hash
-     * @throws SQLException Se houver erro na operação
-     */
-    public void updateSenhaHash(String id, String senhaHash) throws SQLException {
-        String sql = "UPDATE usuarios SET senha_hash = ? WHERE id = ?";
-        executeUpdate(sql, senhaHash, id);
-    }
-
-    /**
-     * Busca usuários ativos (assumindo que existe um campo status).
-     * Caso não exista, retorna todos os usuários.
-     * 
-     * @return Lista de usuários ativos
-     * @throws SQLException Se houver erro na operação
-     */
-    public List<Usuario> findAtivos() throws SQLException {
-        // Verifica se existe coluna status, caso contrário retorna todos
-        String sql = "SELECT * FROM usuarios ORDER BY nome";
-        return findMany(sql, this::mapResultSetToUsuario);
+    public void updateSenha(String id, String senha) throws SQLException {
+        String sql = "UPDATE usuarios SET senha = ? WHERE id = ?";
+        executeUpdate(sql, senha, id);
     }
 
     /**
      * Realiza autenticação do usuário.
      * 
-     * @param email     Email do usuário
-     * @param senhaHash Senha hash para verificação
+     * @param email Email do usuário
+     * @param senha Senha para verificação
      * @return Usuario autenticado ou null se não encontrado
      * @throws SQLException Se houver erro na operação
      */
-    public Usuario authenticate(String email, String senhaHash) throws SQLException {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND senha_hash = ?";
-        return findOne(sql, this::mapResultSetToUsuario, email, senhaHash);
+    public Usuario authenticate(String email, String senha) throws SQLException {
+        String sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+        return findOne(sql, this::mapResultSetToUsuario, email, senha);
     }
 
     /**
@@ -172,13 +136,13 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
         String id = rs.getString("id");
         String nome = rs.getString("nome");
         String email = rs.getString("email");
-        String senhaHash = rs.getString("senha_hash");
+        String senha = rs.getString("senha");
 
         // Por padrão, retorna como Cliente (pode ser ajustado baseado em algum campo
         // tipo)
         // Se existir um campo 'tipo' na tabela, pode ser usado para determinar o tipo
         // correto
-        return new Cliente(id, nome, email, "", "", "");
+        return new Cliente(id, nome, email, senha, "", "");
     }
 
     /**
