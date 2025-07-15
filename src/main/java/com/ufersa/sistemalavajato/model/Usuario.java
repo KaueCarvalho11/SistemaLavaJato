@@ -6,12 +6,14 @@ public abstract class Usuario {
 	private String nome;
 	private String email;
 	private String senha;
+	private String senhaHash;
 
-	public Usuario(String id, String nome, String email, String senha) {
+	public Usuario(String id, String nome, String email, String senha, String senhaHash) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
+		this.senhaHash = senhaHash;
 	}
 
 	public void realizarLogin() {
@@ -48,6 +50,14 @@ public abstract class Usuario {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public String getSenhaHash() {
+		return senhaHash;
+	}
+
+	public void setSenhaHash(String senhaHash) {
+		this.senhaHash = senhaHash;
 	}
 
 	@Override
