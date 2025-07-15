@@ -14,6 +14,7 @@ public class ServicoRepository extends BaseRepository<Servico> {
     @Override
     public void save(Servico servico) throws SQLException {
         String sql = "INSERT INTO servicos (tipo, descricao, preco, status, forma_pagamento, " +
+<<<<<<< HEAD
                 "id_veiculo, id_funcionario, data_inicio, data_conclusao) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
@@ -49,18 +50,63 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "forma_pagamento = ?, id_veiculo = ?, id_funcionario = ?, " +
                 "data_inicio = ?, data_conclusao = ? WHERE id_servico = ?";
         
+=======
+                "num_chassi, id_funcionario, data_inicio, data_conclusao) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+>>>>>>> main
         executeUpdate(sql,
                 servico.getTipo(),
                 servico.getDescricao(),
                 servico.getPreco(),
                 servico.getStatus(),
                 servico.getFormaPagamento(),
+<<<<<<< HEAD
                 servico.getVeiculo() != null ? String.valueOf(servico.getVeiculo().getNumChassi()) : null,
                 servico.getFuncionario() != null ? servico.getFuncionario().getId() : null,
                 null, // data_inicio - implementar quando necessário
                 null, // data_conclusao - implementar quando necessário
                 servico.getIdServico()
         );
+=======
+                servico.getVeiculo() != null ? servico.getVeiculo().getNumChassi() : null,
+                servico.getFuncionario() != null ? servico.getFuncionario().getId() : null,
+                null, // data_inicio será definida quando iniciar o serviço
+                null // data_conclusao será definida quando concluir o serviço
+        );
+    }
+
+    @Override
+    public Servico findById(String id) throws SQLException {
+        String sql = "SELECT s.*, v.num_chassi AS veiculo_num_chassi, v.modelo, v.cor, " +
+                "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+                "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
+                "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
+                "WHERE s.id_servico = ?";
+
+        return findOne(sql, this::mapResultSetToServico, Integer.parseInt(id));
+    }
+
+    @Override
+    public void update(Servico servico) throws SQLException {
+        String sql = "UPDATE servicos SET tipo = ?, descricao = ?, preco = ?, status = ?, " +
+                "forma_pagamento = ?, num_chassi = ?, id_funcionario = ?, " +
+                "data_inicio = ?, data_conclusao = ? WHERE id_servico = ?";
+
+        executeUpdate(sql,
+                servico.getTipo(),
+                servico.getDescricao(),
+                servico.getPreco(),
+                servico.getStatus(),
+                servico.getFormaPagamento(),
+                servico.getVeiculo() != null ? servico.getVeiculo().getNumChassi() : null,
+                servico.getFuncionario() != null ? servico.getFuncionario().getId() : null,
+                null, // data_inicio - implementar quando necessário
+                null, // data_conclusao - implementar quando necessário
+                servico.getIdServico());
+>>>>>>> main
     }
 
     @Override
@@ -71,6 +117,7 @@ public class ServicoRepository extends BaseRepository<Servico> {
 
     @Override
     public List<Servico> findAll() throws SQLException {
+<<<<<<< HEAD
         String sql = "SELECT s.*, v.id as veiculo_id, v.modelo, v.num_chassi, v.cor, " +
                 "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
                 "FROM servicos s " +
@@ -79,6 +126,16 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "ORDER BY s.data_criacao DESC";
         
+=======
+        String sql = "SELECT s.*, v.num_chassi AS veiculo_num_chassi, v.modelo, v.cor, " +
+                "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+                "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
+                "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
+                "ORDER BY s.data_criacao DESC";
+
+>>>>>>> main
         return findMany(sql, this::mapResultSetToServico);
     }
 
@@ -86,10 +143,17 @@ public class ServicoRepository extends BaseRepository<Servico> {
      * Busca serviços por status.
      */
     public List<Servico> findByStatus(String status) throws SQLException {
+<<<<<<< HEAD
         String sql = "SELECT s.*, v.id as veiculo_id, v.modelo, v.num_chassi, v.cor, " +
                 "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
                 "FROM servicos s " +
                 "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+=======
+        String sql = "SELECT s.*, v.num_chassi AS veiculo_num_chassi, v.modelo, v.cor, " +
+                "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+>>>>>>> main
                 "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "WHERE s.status = ? " +
@@ -102,10 +166,17 @@ public class ServicoRepository extends BaseRepository<Servico> {
      * Busca serviços por tipo.
      */
     public List<Servico> findByTipo(String tipo) throws SQLException {
+<<<<<<< HEAD
         String sql = "SELECT s.*, v.id as veiculo_id, v.modelo, v.num_chassi, v.cor, " +
                 "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
                 "FROM servicos s " +
                 "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+=======
+        String sql = "SELECT s.*, v.num_chassi AS veiculo_num_chassi, v.modelo, v.cor, " +
+                "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+>>>>>>> main
                 "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "WHERE s.tipo = ? " +
@@ -117,6 +188,7 @@ public class ServicoRepository extends BaseRepository<Servico> {
     /**
      * Busca serviços por veículo.
      */
+<<<<<<< HEAD
     public List<Servico> findByVeiculo(String veiculoId) throws SQLException {
         String sql = "SELECT s.*, v.id as veiculo_id, v.modelo, v.num_chassi, v.cor, " +
                 "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
@@ -128,16 +200,36 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "ORDER BY s.data_criacao DESC";
         
         return findMany(sql, this::mapResultSetToServico, veiculoId);
+=======
+    public List<Servico> findByVeiculo(int numChassi) throws SQLException {
+        String sql = "SELECT s.*, v.num_chassi AS veiculo_num_chassi, v.modelo, v.cor, " +
+                "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+                "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
+                "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
+                "WHERE s.num_chassi = ? " +
+                "ORDER BY s.data_criacao DESC";
+
+        return findMany(sql, this::mapResultSetToServico, numChassi);
+>>>>>>> main
     }
 
     /**
      * Busca serviços por funcionário.
      */
     public List<Servico> findByFuncionario(String funcionarioId) throws SQLException {
+<<<<<<< HEAD
         String sql = "SELECT s.*, v.id as veiculo_id, v.modelo, v.num_chassi, v.cor, " +
                 "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
                 "FROM servicos s " +
                 "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+=======
+        String sql = "SELECT s.*, v.num_chassi AS veiculo_num_chassi, v.cor, " +
+                "f.id_usuario as funcionario_id, u.nome as funcionario_nome " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+>>>>>>> main
                 "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
                 "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
                 "WHERE s.id_funcionario = ? " +
@@ -199,6 +291,7 @@ public class ServicoRepository extends BaseRepository<Servico> {
      * Mapeia ResultSet para objeto Servico.
      */
     private Servico mapResultSetToServico(java.sql.ResultSet rs) throws SQLException {
+<<<<<<< HEAD
         // Cria objetos relacionados
         Veiculo veiculo = null;
         if (rs.getString("veiculo_id") != null) {
@@ -212,6 +305,19 @@ public class ServicoRepository extends BaseRepository<Servico> {
                 "ATIVO" // status padrão
             );
             // Definir ID do veículo via reflection ou adicionar setter
+=======
+        Veiculo veiculo = null;
+        if (rs.getObject("veiculo_num_chassi") != null) {
+            veiculo = new Veiculo(
+                    rs.getString("veiculo_id_cliente"),
+                    rs.getString("veiculo_modelo"),
+                    rs.getInt("veiculo_num_chassi"),
+                    rs.getDouble("veiculo_quilometragem"),
+                    rs.getDouble("veiculo_preco"),
+                    rs.getString("veiculo_cor"),
+                    rs.getInt("veiculo_ano"),
+                    rs.getString("veiculo_status"));
+>>>>>>> main
         }
 
         Funcionario funcionario = null;

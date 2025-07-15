@@ -174,11 +174,11 @@ public class ServicoService {
     /**
      * Busca serviços por veículo.
      */
-    public List<Servico> buscarServicosPorVeiculo(String veiculoId) throws SQLException {
-        if (veiculoId == null || veiculoId.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do veículo não pode ser vazio");
+    public List<Servico> buscarServicosPorVeiculo(int numChassi) throws SQLException {
+        if (numChassi <= 0) {
+            throw new IllegalArgumentException("Número do chassi inválido");
         }
-        return servicoRepository.findByVeiculo(veiculoId);
+        return servicoRepository.findByVeiculo(numChassi);
     }
 
     /**

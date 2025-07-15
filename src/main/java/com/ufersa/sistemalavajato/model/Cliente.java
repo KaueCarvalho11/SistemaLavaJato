@@ -1,18 +1,30 @@
 package com.ufersa.sistemalavajato.model;
 
-public class Cliente {
-    // atributos
+public class Cliente extends Usuario {
+
+    // Atributos específicos do Cliente
     private String endereco;
-    private int numeroTelefone;
+    private String numeroTelefone;
 
-    // construtor
-    public Cliente(String endereco, int numeroTelefone) {
-
+    /**
+     * Construtor da classe Cliente.
+     * Inicializa tanto os atributos de Usuário (usando super()) quanto os de Cliente.
+     * @param id ID do usuário (herdado).
+     * @param nome Nome do usuário (herdado).
+     * @param email Email do usuário (herdado).
+     * @param senha Senha do usuário (herdado).
+     * @param endereco Endereço específico do cliente.
+     * @param numeroTelefone Telefone específico do cliente.
+     */
+    public Cliente(String id, String nome, String email, String senha, String endereco, String numeroTelefone) {
+        // 'super()' chama o construtor da classe pai (Usuario) para inicializar os campos herdados.
+        super(id, nome, email, senha);
         this.endereco = endereco;
         this.numeroTelefone = numeroTelefone;
     }
 
-    // metodos getters e setters
+    // Getters e Setters para os atributos específicos de Cliente.
+
     public String getEndereco() {
         return endereco;
     }
@@ -21,44 +33,23 @@ public class Cliente {
         this.endereco = endereco;
     }
 
-    public int getNumeroTelefone() {
+    public String getNumeroTelefone() {
         return numeroTelefone;
     }
 
-    public void setNumeroTelefone(int numeroTelefone) {
+    public void setNumeroTelefone(String numeroTelefone) {
         this.numeroTelefone = numeroTelefone;
     }
 
-    // metodos CRUD
-
-    // Cadastrar um cliente
-    public void cadastraCliente() {
-
-    }
-
-    // Remover um clinte
-    public void removeCliente() {
-
-    }
-
-    // Atualizar um cliente
-    public void atualizaCliente() {
-
-    }
-
-    // Listar todos os clientes
-    public String listarCliente() {
-        return "Cliente não encontrado";
-    }
-
-    // Exibe um cliente especifico
-    public String exibirCliente() {
-        return "Cliente nao encontrado";
-    }
-
-    // métodos auxiliares
+    /**
+     * Sobrescreve o método toString para fornecer uma representação textual completa do objeto Cliente.
+     * Útil para logs e impressões rápidas.
+     */
+    @Override
     public String toString() {
-        return "Endereço: " + endereco + " Numero de telefone: " + numeroTelefone;
+        return "Cliente: " + getNome() + "\n" +
+               "Email: " + getEmail() + "\n" +
+               "Endereço: " + endereco + "\n" +
+               "Telefone: " + numeroTelefone;
     }
-
 }
