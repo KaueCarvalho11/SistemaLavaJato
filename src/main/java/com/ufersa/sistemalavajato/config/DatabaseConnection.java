@@ -90,10 +90,33 @@ public class DatabaseConnection {
      * Testa a conexão com o banco de dados.
      */
     private void testConnection() throws SQLException {
+        System.out.println("=== TESTE DE CONEXÃO COM BANCO DE DADOS ===");
+        System.out.println("Tentando conectar ao banco: " + DB_URL);
+
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            System.out.println("✓ Conexão estabelecida com sucesso!");
+
             // Testa se a conexão está funcionando
             connection.createStatement().execute("SELECT 1;");
+            System.out.println("✓ Teste de query executado com sucesso!");
+
+            // Verifica informações do banco
+            System.out.println("✓ Informações do banco:");
+            System.out.println("  - Caminho do arquivo: " + getDatabasePath());
+            System.out.println("  - URL de conexão: " + DB_URL);
+            System.out.println("  - Driver: SQLite JDBC");
+
+            // Verifica se as tabelas principais existem
+            testDatabaseTables(connection);
+
+        } catch (SQLException e) {
+            System.err.println("✗ Erro ao conectar com o banco de dados:");
+            System.err.println("  - Mensagem: " + e.getMessage());
+            System.err.println("  - Código de erro: " + e.getErrorCode());
+            throw e;
         }
+
+        System.out.println("=== TESTE DE CONEXÃO CONCLUÍDO ===");
     }
 
     /**
@@ -134,21 +157,31 @@ public class DatabaseConnection {
      */
     private void initializeDatabase() throws SQLException {
         if (isInitialized) {
+            System.out.println("✓ Banco de dados já foi inicializado anteriormente");
             return;
         }
+
+        System.out.println("=== INICIALIZANDO BANCO DE DADOS ===");
 
         try (Connection connection = getConnection();
                 Statement statement = connection.createStatement()) {
 
             // Cria tabela de migrations se não existir
+            System.out.println("Criando tabela de migrations...");
             createMigrationsTable(statement);
 
             // Executa todas as migrations
+            System.out.println("Executando migrations...");
             runMigrations(statement);
 
             isInitialized = true;
-            System.out.println("Banco de dados inicializado com sucesso!");
+            System.out.println("✓ Banco de dados inicializado com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("✗ Erro ao inicializar banco de dados: " + e.getMessage());
+            throw e;
         }
+
+        System.out.println("=== INICIALIZAÇÃO CONCLUÍDA ===");
     }
 
     /**
@@ -169,14 +202,35 @@ public class DatabaseConnection {
      */
     private void runMigrations(Statement statement) throws SQLException {
         List<Migration> migrations = getMigrations();
+        int executedMigrations = 0;
+        int skippedMigrations = 0;
+
+        System.out.println("Total de migrations disponíveis: " + migrations.size());
 
         for (Migration migration : migrations) {
             if (!isMigrationExecuted(statement, migration.getVersion())) {
-                System.out.println("Executando migration: " + migration.getDescription());
-                migration.execute(statement);
-                recordMigration(statement, migration);
+                System.out.println(
+                        "📄 Executando migration " + migration.getVersion() + ": " + migration.getDescription());
+                try {
+                    migration.execute(statement);
+                    recordMigration(statement, migration);
+                    System.out.println("✓ Migration " + migration.getVersion() + " executada com sucesso!");
+                    executedMigrations++;
+                } catch (SQLException e) {
+                    System.err
+                            .println("✗ Erro ao executar migration " + migration.getVersion() + ": " + e.getMessage());
+                    throw e;
+                }
+            } else {
+                System.out.println("⏭ Migration " + migration.getVersion() + " já foi executada anteriormente");
+                skippedMigrations++;
             }
         }
+
+        System.out.println("📊 Resumo das migrations:");
+        System.out.println("  - Executadas: " + executedMigrations);
+        System.out.println("  - Ignoradas: " + skippedMigrations);
+        System.out.println("  - Total: " + migrations.size());
     }
 
     /**
@@ -243,9 +297,6 @@ public class DatabaseConnection {
             public void execute(Statement statement) throws SQLException {
                 String sql = "CREATE TABLE IF NOT EXISTS funcionarios (" +
                         "id_usuario TEXT PRIMARY KEY, " +
-                        "cargo TEXT, " +
-                        "salario REAL, " +
-                        "data_admissao DATE, " +
                         "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                         "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                         "FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE" +
@@ -254,27 +305,26 @@ public class DatabaseConnection {
             }
         });
 
-        // Migration 4: Criar tabela de veículos
         migrations.add(new Migration("004", "Criar tabela veiculos") {
             @Override
             public void execute(Statement statement) throws SQLException {
-                String sql = "CREATE TABLE IF NOT EXISTS veiculos (" +
-                        "id TEXT PRIMARY KEY, " +
-                        "id_cliente TEXT NOT NULL, " +
-                        "modelo TEXT NOT NULL, " +
-                        "num_chassi INTEGER UNIQUE, " +
-                        "quilometragem REAL DEFAULT 0, " +
-                        "preco REAL, " +
-                        "cor TEXT, " +
-                        "ano_fabricacao INTEGER, " +
-                        "status TEXT DEFAULT 'ATIVO', " +
-                        "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        "FOREIGN KEY (id_cliente) REFERENCES clientes(id_usuario) ON DELETE CASCADE" +
-                        ")";
+                String sql = ""
+                        + "CREATE TABLE IF NOT EXISTS veiculos ("
+                        + "num_chassi INTEGER PRIMARY KEY, "
+                        + "id_cliente TEXT NOT NULL, "
+                        + "modelo TEXT NOT NULL, "
+                        + "quilometragem REAL DEFAULT 0, "
+                        + "preco REAL, "
+                        + "cor TEXT, "
+                        + "ano_fabricacao INTEGER, "
+                        + "status TEXT DEFAULT 'ATIVO', "
+                        + "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                        + "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                        + "FOREIGN KEY (id_cliente) REFERENCES clientes(id_usuario) ON DELETE CASCADE"
+                        + ")";
                 statement.execute(sql);
+                // índice no cliente
                 statement.execute("CREATE INDEX IF NOT EXISTS idx_veiculos_cliente ON veiculos(id_cliente)");
-                statement.execute("CREATE INDEX IF NOT EXISTS idx_veiculos_chassi ON veiculos(num_chassi)");
             }
         });
 
@@ -282,58 +332,58 @@ public class DatabaseConnection {
         migrations.add(new Migration("005", "Criar tabela servicos") {
             @Override
             public void execute(Statement statement) throws SQLException {
-                String sql = "CREATE TABLE IF NOT EXISTS servicos (" +
-                        "id_servico INTEGER PRIMARY KEY, " +
-                        "tipo TEXT NOT NULL, " +
-                        "descricao TEXT, " +
-                        "preco REAL NOT NULL, " +
-                        "status TEXT DEFAULT 'PENDENTE' CHECK (status IN ('PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO')), "
-                        +
-                        "forma_pagamento TEXT, " +
-                        "id_veiculo TEXT NOT NULL, " +
-                        "id_funcionario TEXT NOT NULL, " +
-                        "data_inicio DATETIME, " +
-                        "data_conclusao DATETIME, " +
-                        "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        "FOREIGN KEY (id_veiculo) REFERENCES veiculos(id) ON DELETE CASCADE, " +
-                        "FOREIGN KEY (id_funcionario) REFERENCES funcionarios(id_usuario) ON DELETE CASCADE" +
-                        ")";
+                String sql = ""
+                        + "CREATE TABLE IF NOT EXISTS servicos ("
+                        + "id_servico INTEGER PRIMARY KEY, "
+                        + "tipo TEXT NOT NULL, "
+                        + "descricao TEXT, "
+                        + "preco REAL NOT NULL, "
+                        + "status TEXT DEFAULT 'PENDENTE' CHECK (status IN ('PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO')), "
+                        + "forma_pagamento TEXT, "
+                        + "num_chassi INTEGER NOT NULL, " // FK ajustado
+                        + "id_funcionario TEXT NOT NULL, "
+                        + "data_inicio DATETIME, "
+                        + "data_conclusao DATETIME, "
+                        + "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                        + "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                        + "FOREIGN KEY (num_chassi) REFERENCES veiculos(num_chassi) ON DELETE CASCADE, "
+                        + "FOREIGN KEY (id_funcionario) REFERENCES funcionarios(id_usuario) ON DELETE CASCADE"
+                        + ")";
                 statement.execute(sql);
-                statement.execute("CREATE INDEX IF NOT EXISTS idx_servicos_veiculo ON servicos(id_veiculo)");
+                statement.execute("CREATE INDEX IF NOT EXISTS idx_servicos_veiculo ON servicos(num_chassi)");
                 statement.execute("CREATE INDEX IF NOT EXISTS idx_servicos_funcionario ON servicos(id_funcionario)");
                 statement.execute("CREATE INDEX IF NOT EXISTS idx_servicos_status ON servicos(status)");
             }
         });
 
-        // Migration 6: Criar tabela de agendamentos
+        // Migration 6: Criar tabela de agendamento
         migrations.add(new Migration("006", "Criar tabela agendamentos") {
             @Override
             public void execute(Statement statement) throws SQLException {
-                String sql = "CREATE TABLE IF NOT EXISTS agendamentos (" +
-                        "id TEXT PRIMARY KEY, " +
-                        "id_cliente TEXT NOT NULL, " +
-                        "id_veiculo TEXT NOT NULL, " +
-                        "id_funcionario TEXT, " +
-                        "data_hora DATETIME NOT NULL, " +
-                        "status TEXT DEFAULT 'AGENDADO' CHECK (status IN ('AGENDADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO')), "
-                        +
-                        "observacoes TEXT, " +
-                        "preco_total REAL, " +
-                        "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        "FOREIGN KEY (id_cliente) REFERENCES clientes(id_usuario) ON DELETE CASCADE, " +
-                        "FOREIGN KEY (id_veiculo) REFERENCES veiculos(id) ON DELETE CASCADE, " +
-                        "FOREIGN KEY (id_funcionario) REFERENCES funcionarios(id_usuario) ON DELETE SET NULL" +
-                        ")";
+                String sql = ""
+                        + "CREATE TABLE IF NOT EXISTS agendamentos ("
+                        + "id TEXT PRIMARY KEY, "
+                        + "id_cliente TEXT NOT NULL, "
+                        + "num_chassi INTEGER NOT NULL, " // FK ajustado
+                        + "id_funcionario TEXT, "
+                        + "data_hora DATETIME NOT NULL, "
+                        + "status TEXT DEFAULT 'AGENDADO' CHECK (status IN ('AGENDADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO')), "
+                        + "observacoes TEXT, "
+                        + "preco_total REAL, "
+                        + "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                        + "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                        + "FOREIGN KEY (id_cliente) REFERENCES clientes(id_usuario) ON DELETE CASCADE, "
+                        + "FOREIGN KEY (num_chassi) REFERENCES veiculos(num_chassi) ON DELETE CASCADE, "
+                        + "FOREIGN KEY (id_funcionario) REFERENCES funcionarios(id_usuario) ON DELETE SET NULL"
+                        + ")";
                 statement.execute(sql);
                 statement.execute("CREATE INDEX IF NOT EXISTS idx_agendamentos_cliente ON agendamentos(id_cliente)");
+                statement.execute("CREATE INDEX IF NOT EXISTS idx_agendamentos_veiculo ON agendamentos(num_chassi)");
                 statement.execute(
                         "CREATE INDEX IF NOT EXISTS idx_agendamentos_funcionario ON agendamentos(id_funcionario)");
                 statement.execute("CREATE INDEX IF NOT EXISTS idx_agendamentos_data ON agendamentos(data_hora)");
             }
         });
-
         // Migration 7: Criar tabela de junção agendamento_servicos
         migrations.add(new Migration("007", "Criar tabela agendamento_servicos") {
             @Override
@@ -364,8 +414,7 @@ public class DatabaseConnection {
                     statement.execute(insertAdmin);
 
                     // Insere funcionário admin
-                    String insertFuncionario = "INSERT INTO funcionarios (id_usuario, cargo, salario, data_admissao) " +
-                            "VALUES ('admin', 'Administrador', 5000.00, date('now'))";
+                    String insertFuncionario = "INSERT INTO funcionarios (id_usuario) VALUES ('admin')";
                     statement.execute(insertFuncionario);
 
                     System.out.println("Usuário admin criado - Email: admin@lavajato.com | Senha: admin123");
@@ -430,4 +479,7 @@ public class DatabaseConnection {
     public boolean isInitialized() {
         return isInitialized;
     }
+
+
+
 }
