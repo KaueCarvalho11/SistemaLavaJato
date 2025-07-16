@@ -99,7 +99,7 @@ public class Program {
 
                             } else if (userSession.isCliente()) {
                                 System.out.println("UI do Cliente ainda não implementada.");
-                                authService.logout(); // Logout por enquanto
+                                authService.logout(); 
                             }
 
                         } else {
