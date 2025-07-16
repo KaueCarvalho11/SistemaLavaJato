@@ -1,10 +1,13 @@
-    package com.ufersa.sistemalavajato;
+package com.ufersa.sistemalavajato;
 
-    import com.ufersa.sistemalavajato.service.ClienteService;
-    import com.ufersa.sistemalavajato.service.FuncionarioService;
-    import java.sql.SQLException;
-    import java.util.Scanner;
-    import java.util.InputMismatchException;
+import com.ufersa.sistemalavajato.model.Funcionario;
+import com.ufersa.sistemalavajato.service.ClienteService;
+import com.ufersa.sistemalavajato.service.FuncionarioService;
+import com.ufersa.sistemalavajato.ui.FuncionarioUI; 
+import com.ufersa.sistemalavajato.ui.LoginUI;
+import java.sql.SQLException;
+import java.util.Scanner;
+import java.util.InputMismatchException;
 
     public class Program {
         public static void main(String[] args) {
@@ -70,7 +73,17 @@
                             break;
 
                             case 3:
-                                //chamada de função de login
+                                try{
+                                    LoginUI loginUI = new LoginUI();
+                                    Funcionario funcionarioLogado = loginUI.exibirLoginDeFuncionario();
+                                    if(funcionarioLogado != null){
+                                        FuncionarioUI funcionarioUI = new FuncionarioUI(funcionarioLogado);
+                                        funcionarioUI.menu(funcionarioLogado);
+                                    }
+                                }
+                                catch(Exception e){
+                                    System.err.println("\n ERRO: " + e.getMessage());
+                                }
                             break;
 
                         case 0:
