@@ -1,5 +1,7 @@
 package com.ufersa.sistemalavajato.model;
 
+import com.ufersa.sistemalavajato.enums.TipoUsuario;
+
 public abstract class Usuario {
 
 	private String id;
@@ -7,6 +9,13 @@ public abstract class Usuario {
 	private String email;
 	private String senha;
 	private String senhaHash;
+
+	public Usuario(String id, String nome, String email, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.senha = senha;
+	}
 
 	public Usuario(String id, String nome, String email, String senha, String senhaHash) {
 		this.id = id;
@@ -16,9 +25,13 @@ public abstract class Usuario {
 		this.senhaHash = senhaHash;
 	}
 
-	public void realizarLogin() {
-		// Implementação da lógica de login virá aqui
-	}
+	/**
+	 * Obtém o tipo do usuário.
+	 * Deve ser implementado pelas classes filhas.
+	 * 
+	 * @return TipoUsuario correspondente
+	 */
+	public abstract TipoUsuario getTipoUsuario();
 
 	public String getId() {
 		return id;

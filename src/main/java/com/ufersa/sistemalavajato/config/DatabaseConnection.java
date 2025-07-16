@@ -106,9 +106,6 @@ public class DatabaseConnection {
             System.out.println("  - URL de conexão: " + DB_URL);
             System.out.println("  - Driver: SQLite JDBC");
 
-            // Verifica se as tabelas principais existem
-            testDatabaseTables(connection);
-
         } catch (SQLException e) {
             System.err.println("✗ Erro ao conectar com o banco de dados:");
             System.err.println("  - Mensagem: " + e.getMessage());
@@ -176,6 +173,7 @@ public class DatabaseConnection {
 
             isInitialized = true;
             System.out.println("✓ Banco de dados inicializado com sucesso!");
+
         } catch (SQLException e) {
             System.err.println("✗ Erro ao inicializar banco de dados: " + e.getMessage());
             throw e;
@@ -266,7 +264,10 @@ public class DatabaseConnection {
                         "nome TEXT NOT NULL, " +
                         "email TEXT NOT NULL UNIQUE, " +
                         "senha TEXT NOT NULL, " +
+                        "senha_hash TEXT NOT NULL, " +
                         "tipo_usuario TEXT NOT NULL CHECK (tipo_usuario IN ('CLIENTE', 'FUNCIONARIO')), " +
+                        "endereco TEXT, " +
+                        "numero_telefone TEXT, " +
                         "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                         "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP" +
                         ")";
@@ -408,10 +409,16 @@ public class DatabaseConnection {
                 // Verifica se já existem dados
                 ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM usuarios");
                 if (rs.next() && rs.getInt(1) == 0) {
+                    // Gera hash da senha admin123
+                    String senhaHash = com.ufersa.sistemalavajato.util.PasswordUtils.hashPassword("admin123");
+
                     // Insere usuário admin
-                    String insertAdmin = "INSERT INTO usuarios (id, nome, email, senha, tipo_usuario) " +
-                            "VALUES ('admin', 'Administrador', 'admin@lavajato.com', 'admin123', 'FUNCIONARIO')";
-                    statement.execute(insertAdmin);
+                    String insertAdmin = "INSERT INTO usuarios (id, nome, email, senha, senha_hash, tipo_usuario) " +
+                            "VALUES ('admin', 'Administrador', 'admin@lavajato.com', 'admin123', ?, 'FUNCIONARIO')";
+                    java.sql.PreparedStatement ps = statement.getConnection().prepareStatement(insertAdmin);
+                    ps.setString(1, senhaHash);
+                    ps.execute();
+                    ps.close();
 
                     // Insere funcionário admin
                     String insertFuncionario = "INSERT INTO funcionarios (id_usuario) VALUES ('admin')";
@@ -479,7 +486,5 @@ public class DatabaseConnection {
     public boolean isInitialized() {
         return isInitialized;
     }
-
-
 
 }
