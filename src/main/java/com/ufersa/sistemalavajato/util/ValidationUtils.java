@@ -10,9 +10,6 @@ public class ValidationUtils {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
-    private static final Pattern PHONE_PATTERN = Pattern.compile(
-            "^\\(?\\d{2}\\)?[\\s-]?\\d{4,5}[\\s-]?\\d{4}$");
-
     /**
      * Valida formato de email.
      * 
@@ -24,19 +21,6 @@ public class ValidationUtils {
             return false;
         }
         return EMAIL_PATTERN.matcher(email.trim()).matches();
-    }
-
-    /**
-     * Valida formato de telefone brasileiro.
-     * 
-     * @param phone Telefone a ser validado
-     * @return true se válido, false caso contrário
-     */
-    public static boolean isValidPhone(String phone) {
-        if (phone == null || phone.trim().isEmpty()) {
-            return false;
-        }
-        return PHONE_PATTERN.matcher(phone.trim()).matches();
     }
 
     /**
