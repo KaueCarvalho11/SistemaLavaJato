@@ -1,6 +1,7 @@
 package com.ufersa.sistemalavajato.repository;
 
 import com.ufersa.sistemalavajato.model.Funcionario;
+import com.ufersa.sistemalavajato.util.PasswordUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,13 +15,16 @@ public class FuncionarioRepository extends BaseRepository<Funcionario> {
 
     @Override
     public void save(Funcionario funcionario) throws SQLException {
-        /* Para salvar um funcionário, precisamos inserir em duas tabelas:
-        Na tabela 'usuarios' com os dados principais e na tabela 'funcionarios' com o ID do usuário 
-        para marcá-lo como funcionário.
-        Usamos uma transação para garantir que ambas as operações aconteçam ou nenhuma aconteça.
-        */ 
+        /*
+         * Para salvar um funcionário, precisamos inserir em duas tabelas:
+         * Na tabela 'usuarios' com os dados principais e na tabela 'funcionarios' com o
+         * ID do usuário
+         * para marcá-lo como funcionário.
+         * Usamos uma transação para garantir que ambas as operações aconteçam ou
+         * nenhuma aconteça.
+         */
 
-        String sqlUsuario = "INSERT INTO usuarios (id, nome, email, senha, tipo_usuario) VALUES (?, ?, ?, ?, 'FUNCIONARIO')";
+        String sqlUsuario = "INSERT INTO usuarios (id, nome, email, senha, senha_hash, tipo_usuario) VALUES (?, ?, ?, ?, ?, 'FUNCIONARIO')";
         String sqlFuncionario = "INSERT INTO funcionarios (id_usuario) VALUES (?)";
 
         // A ferramenta executeTransaction vem da BaseRepository
@@ -31,6 +35,7 @@ public class FuncionarioRepository extends BaseRepository<Funcionario> {
                 stmtUsuario.setString(2, funcionario.getNome());
                 stmtUsuario.setString(3, funcionario.getEmail());
                 stmtUsuario.setString(4, funcionario.getSenha());
+                stmtUsuario.setString(5, PasswordUtils.hashPassword(funcionario.getSenha()));
                 stmtUsuario.executeUpdate();
             }
 
@@ -44,70 +49,72 @@ public class FuncionarioRepository extends BaseRepository<Funcionario> {
 
     @Override
     public Funcionario findById(String id) throws SQLException {
-        // Usamos um JOIN para garantir que o usuário encontrado é de fato um funcionário.
+        // Usamos um JOIN para garantir que o usuário encontrado é de fato um
+        // funcionário.
         String sql = "SELECT u.* FROM usuarios u " +
-                     "JOIN funcionarios f ON u.id = f.id_usuario " +
-                     "WHERE u.id = ?";
-        
+                "JOIN funcionarios f ON u.id = f.id_usuario " +
+                "WHERE u.id = ?";
+
         return findOne(sql, this::mapResultSetToFuncionario, id);
     }
 
     public Funcionario EncontrarPorEmail(String email) throws SQLException {
-    String sql = "SELECT u.* FROM usuarios u " +
-                 "JOIN funcionarios f ON u.id = f.id_usuario " +
-                 "WHERE u.email = ?";
-    
-    return findOne(sql, (rs) -> {
-        // Aqui a gente monta um funcionário com os dados do banco
-        return new Funcionario(
-            rs.getString("id"),
-            rs.getString("nome"),
-            rs.getString("email"),
-            rs.getString("senha") 
-        );
-    }, email);
+        String sql = "SELECT u.* FROM usuarios u " +
+                "JOIN funcionarios f ON u.id = f.id_usuario " +
+                "WHERE u.email = ?";
+
+        return findOne(sql, (rs) -> {
+            // Aqui a gente monta um funcionário com os dados do banco
+            return new Funcionario(
+                    rs.getString("id"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("senha"));
+        }, email);
     }
 
     @Override
     public void update(Funcionario funcionario) throws SQLException {
         // Por enquanto, a atualização afeta apenas a tabela de usuários.
         String sql = "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?";
-        
-        executeUpdate(sql, 
-            funcionario.getNome(), 
-            funcionario.getEmail(), 
-            funcionario.getSenha(), 
-            funcionario.getId()
-        );
+
+        executeUpdate(sql,
+                funcionario.getNome(),
+                funcionario.getEmail(),
+                funcionario.getSenha(),
+                funcionario.getId());
     }
 
     @Override
     public void delete(String id) throws SQLException {
         // Devido "ON DELETE CASCADE" que definimos no banco de dados,
-        // ao deletar o usuário, o registro correspondente em 'funcionarios' será apagado automaticamente.
+        // ao deletar o usuário, o registro correspondente em 'funcionarios' será
+        // apagado automaticamente.
         String sql = "DELETE FROM usuarios WHERE id = ?";
         executeUpdate(sql, id);
     }
 
     @Override
     public List<Funcionario> findAll() throws SQLException {
-        // Assim como no findById, usamos JOIN para listar apenas os usuários que são funcionários.
+        // Assim como no findById, usamos JOIN para listar apenas os usuários que são
+        // funcionários.
         String sql = "SELECT u.* FROM usuarios u " +
-                     "JOIN funcionarios f ON u.id = f.id_usuario " +
-                     "ORDER BY u.nome";
+                "JOIN funcionarios f ON u.id = f.id_usuario " +
+                "ORDER BY u.nome";
 
         return findMany(sql, this::mapResultSetToFuncionario);
     }
 
     /**
-     * Método "tradutor" que converte uma linha do banco de dados em um objeto Funcionario.
+     * Método "tradutor" que converte uma linha do banco de dados em um objeto
+     * Funcionario.
      */
     private Funcionario mapResultSetToFuncionario(ResultSet rs) throws SQLException {
-    return new Funcionario(
-        rs.getString("id"),
-        rs.getString("nome"),
-        rs.getString("email"),
-        null // senha não carregada por segurança
-    );
-}
+        return new Funcionario(
+                rs.getString("id"),
+                rs.getString("nome"),
+                rs.getString("email"),
+                null // senha não carregada por segurança
+        );
+    }
 }
