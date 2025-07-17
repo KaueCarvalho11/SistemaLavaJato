@@ -90,10 +90,30 @@ public class DatabaseConnection {
      * Testa a conexão com o banco de dados.
      */
     private void testConnection() throws SQLException {
+        System.out.println("=== TESTE DE CONEXÃO COM BANCO DE DADOS ===");
+        System.out.println("Tentando conectar ao banco: " + DB_URL);
+
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            System.out.println("✓ Conexão estabelecida com sucesso!");
+
             // Testa se a conexão está funcionando
             connection.createStatement().execute("SELECT 1;");
+            System.out.println("✓ Teste de query executado com sucesso!");
+
+            // Verifica informações do banco
+            System.out.println("✓ Informações do banco:");
+            System.out.println("  - Caminho do arquivo: " + getDatabasePath());
+            System.out.println("  - URL de conexão: " + DB_URL);
+            System.out.println("  - Driver: SQLite JDBC");
+
+        } catch (SQLException e) {
+            System.err.println("✗ Erro ao conectar com o banco de dados:");
+            System.err.println("  - Mensagem: " + e.getMessage());
+            System.err.println("  - Código de erro: " + e.getErrorCode());
+            throw e;
         }
+
+        System.out.println("=== TESTE DE CONEXÃO CONCLUÍDO ===");
     }
 
     /**
@@ -134,21 +154,32 @@ public class DatabaseConnection {
      */
     private void initializeDatabase() throws SQLException {
         if (isInitialized) {
+            System.out.println("✓ Banco de dados já foi inicializado anteriormente");
             return;
         }
+
+        System.out.println("=== INICIALIZANDO BANCO DE DADOS ===");
 
         try (Connection connection = getConnection();
                 Statement statement = connection.createStatement()) {
 
             // Cria tabela de migrations se não existir
+            System.out.println("Criando tabela de migrations...");
             createMigrationsTable(statement);
 
             // Executa todas as migrations
+            System.out.println("Executando migrations...");
             runMigrations(statement);
 
             isInitialized = true;
-            System.out.println("Banco de dados inicializado com sucesso!");
+            System.out.println("✓ Banco de dados inicializado com sucesso!");
+
+        } catch (SQLException e) {
+            System.err.println("✗ Erro ao inicializar banco de dados: " + e.getMessage());
+            throw e;
         }
+
+        System.out.println("=== INICIALIZAÇÃO CONCLUÍDA ===");
     }
 
     /**
@@ -169,14 +200,35 @@ public class DatabaseConnection {
      */
     private void runMigrations(Statement statement) throws SQLException {
         List<Migration> migrations = getMigrations();
+        int executedMigrations = 0;
+        int skippedMigrations = 0;
+
+        System.out.println("Total de migrations disponíveis: " + migrations.size());
 
         for (Migration migration : migrations) {
             if (!isMigrationExecuted(statement, migration.getVersion())) {
-                System.out.println("Executando migration: " + migration.getDescription());
-                migration.execute(statement);
-                recordMigration(statement, migration);
+                System.out.println(
+                        "📄 Executando migration " + migration.getVersion() + ": " + migration.getDescription());
+                try {
+                    migration.execute(statement);
+                    recordMigration(statement, migration);
+                    System.out.println("✓ Migration " + migration.getVersion() + " executada com sucesso!");
+                    executedMigrations++;
+                } catch (SQLException e) {
+                    System.err
+                            .println("✗ Erro ao executar migration " + migration.getVersion() + ": " + e.getMessage());
+                    throw e;
+                }
+            } else {
+                System.out.println("⏭ Migration " + migration.getVersion() + " já foi executada anteriormente");
+                skippedMigrations++;
             }
         }
+
+        System.out.println("📊 Resumo das migrations:");
+        System.out.println("  - Executadas: " + executedMigrations);
+        System.out.println("  - Ignoradas: " + skippedMigrations);
+        System.out.println("  - Total: " + migrations.size());
     }
 
     /**
@@ -212,7 +264,10 @@ public class DatabaseConnection {
                         "nome TEXT NOT NULL, " +
                         "email TEXT NOT NULL UNIQUE, " +
                         "senha TEXT NOT NULL, " +
+                        "senha_hash TEXT NOT NULL, " +
                         "tipo_usuario TEXT NOT NULL CHECK (tipo_usuario IN ('CLIENTE', 'FUNCIONARIO')), " +
+                        "endereco TEXT, " +
+                        "numero_telefone TEXT, " +
                         "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                         "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP" +
                         ")";
@@ -354,10 +409,16 @@ public class DatabaseConnection {
                 // Verifica se já existem dados
                 ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM usuarios");
                 if (rs.next() && rs.getInt(1) == 0) {
+                    // Gera hash da senha admin123
+                    String senhaHash = com.ufersa.sistemalavajato.util.PasswordUtils.hashPassword("admin123");
+
                     // Insere usuário admin
-                    String insertAdmin = "INSERT INTO usuarios (id, nome, email, senha, tipo_usuario) " +
-                            "VALUES ('admin', 'Administrador', 'admin@lavajato.com', 'admin123', 'FUNCIONARIO')";
-                    statement.execute(insertAdmin);
+                    String insertAdmin = "INSERT INTO usuarios (id, nome, email, senha, senha_hash, tipo_usuario) " +
+                            "VALUES ('admin', 'Administrador', 'admin@lavajato.com', 'admin123', ?, 'FUNCIONARIO')";
+                    java.sql.PreparedStatement ps = statement.getConnection().prepareStatement(insertAdmin);
+                    ps.setString(1, senhaHash);
+                    ps.execute();
+                    ps.close();
 
                     // Insere funcionário admin
                     String insertFuncionario = "INSERT INTO funcionarios (id_usuario) VALUES ('admin')";
@@ -425,4 +486,5 @@ public class DatabaseConnection {
     public boolean isInitialized() {
         return isInitialized;
     }
+
 }
