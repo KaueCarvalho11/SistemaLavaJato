@@ -2,6 +2,7 @@ package com.ufersa.sistemalavajato;
 
 import com.ufersa.sistemalavajato.service.ClienteService;
 import com.ufersa.sistemalavajato.service.FuncionarioService;
+import com.ufersa.sistemalavajato.ui.ClienteUI;
 import com.ufersa.sistemalavajato.ui.FuncionarioUI;
 import com.ufersa.sistemalavajato.auth.AuthService;
 import com.ufersa.sistemalavajato.auth.UserSession;
@@ -56,7 +57,6 @@ public class Program {
 
                         clienteService.cadastrarCliente(ClienteId, ClienteNome, ClienteEmail, ClienteSenha, endereco,
                                 numeroTelefone);
-                        
 
                         System.out.print("Cliente cadastrado.");
                         break;
@@ -98,8 +98,11 @@ public class Program {
                                 System.out.println("Você foi deslogado.");
 
                             } else if (userSession.isCliente()) {
-                                System.out.println("UI do Cliente ainda não implementada.");
-                                authService.logout(); 
+                                ClienteUI clienteUI = new ClienteUI(
+                                        (com.ufersa.sistemalavajato.model.Cliente) userSession.getCurrentUser());
+                                clienteUI.menu();
+                                authService.logout();
+                                System.out.println("Você foi deslogado.");
                             }
 
                         } else {
@@ -117,7 +120,8 @@ public class Program {
                 }
             } catch (SQLException e) {
                 // Este erro é sobre o BANCO DE DADOS
-                System.err.println("ERRO DE BANCO DE DADOS: Não foi possível completar a operação. Detalhe: " + e.getMessage());
+                System.err.println(
+                        "ERRO DE BANCO DE DADOS: Não foi possível completar a operação. Detalhe: " + e.getMessage());
             } catch (IllegalArgumentException | IllegalStateException e) {
                 // Este erro é sobre DADOS INVÁLIDOS ou REGRAS DE NEGÓCIO
                 System.err.println("ERRO: " + e.getMessage());

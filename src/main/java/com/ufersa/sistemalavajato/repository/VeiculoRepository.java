@@ -73,4 +73,28 @@ public class VeiculoRepository extends BaseRepository<Veiculo> {
                 rs.getInt("ano_fabricacao"),
                 rs.getString("status"));
     }
+    
+// Adicione este método dentro da classe VeiculoRepository.java
+
+/**
+ * Conta quantos veículos um cliente específico possui.
+ * @param clienteId O ID do cliente.
+ * @return O número de veículos do cliente.
+ * @throws SQLException
+ */
+public int countByClienteId(String clienteId) throws SQLException {
+    String sql = "SELECT COUNT(*) FROM veiculos WHERE id_cliente = ?";
+    // Supondo que sua BaseRepository tenha um método 'count' que retorna um int
+    return count(sql, clienteId);
 }
+
+// Adicione este método à sua classe VeiculoRepository
+
+public List<Veiculo> findByClienteId(String clienteId) throws SQLException {
+    String sql = "SELECT * FROM veiculos WHERE id_cliente = ? ORDER BY modelo";
+    return findMany(sql, this::mapResultSetToVeiculo, clienteId);
+}
+
+}
+
+
