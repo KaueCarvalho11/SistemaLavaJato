@@ -22,7 +22,7 @@ public class ServicoService {
      * Cadastra um novo serviço.
      */
     public void cadastrarServico(String tipo, String descricao, double preco,
-            Veiculo veiculo, Funcionario funcionario) throws SQLException {
+            Veiculo veiculo, Funcionario funcionario, String metodoPagamento) throws SQLException {
         // Validações básicas
         if (tipo == null || tipo.trim().isEmpty()) {
             throw new IllegalArgumentException("Tipo do serviço não pode ser vazio");
@@ -36,10 +36,15 @@ public class ServicoService {
         if (funcionario == null) {
             throw new IllegalArgumentException("Funcionário é obrigatório");
         }
+        if (metodoPagamento == null || metodoPagamento.trim().isEmpty()) {
+            throw new IllegalArgumentException("Método de pagamento não pode ser vazio");
+        }
+        if (descricao == null || descricao.trim().isEmpty()) {
+            throw new IllegalArgumentException("Descrição não pode ser vazia");
+        }
 
         // Cria o serviço
-        Servico servico = new Servico(0, tipo, veiculo, funcionario); // ID será gerado pelo banco
-        servico.setDescricao(descricao);
+        Servico servico = new Servico(0, tipo, veiculo, funcionario, metodoPagamento, descricao);
         servico.setPreco(preco);
         servico.setStatus("PENDENTE");
 
@@ -120,6 +125,11 @@ public class ServicoService {
             throw new IllegalStateException("Não é possível atualizar serviços concluídos");
         }
 
+        // Verifica se o serviço pode ser atualizado
+        if ("CONCLUIDO".equals(servico.getStatus())) {
+            throw new IllegalStateException("Não é possível atualizar serviços concluídos");
+        }
+
         // Validações
         if (tipo != null && !tipo.trim().isEmpty()) {
             servico.setTipo(tipo);
@@ -187,6 +197,7 @@ public class ServicoService {
     }
 
     /**
+     * /**
      * Exibe detalhes de um serviço específico.
      */
     public Servico exibirServicoAtual(int servicoId) throws SQLException {

@@ -23,7 +23,7 @@ public class FuncionarioUI {
 
     public void menu() {
         int op = -1;
-        while(op != 0){
+        while (op != 0) {
             System.out.println("\n--- MENU DO FUNCIONÁRIO: " + this.funcionarioLogado.getNome() + " ---");
             System.out.println("(1) Iniciar Serviço");
             System.out.println("(2) Atualizar Status de Serviço (Concluir/Cancelar)");
@@ -55,7 +55,6 @@ public class FuncionarioUI {
                         break;
                     case 0:
                         System.out.println("Deslogando...");
-                        ;
                         break;
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
@@ -64,9 +63,7 @@ public class FuncionarioUI {
             } catch (InputMismatchException e) {
                 System.err.println("Entrada inválida. Por favor, digite um número.");
                 sc.nextLine();
-            }
-            // permite capturar e tratar diferentes tipos de exceções
-            catch (SQLException | IllegalArgumentException | IllegalStateException e) {
+            } catch (SQLException | IllegalArgumentException | IllegalStateException e) {
                 System.err.println("ERRO: " + e.getMessage());
             }
         }
@@ -149,28 +146,35 @@ public class FuncionarioUI {
         if (servicos.isEmpty())
             System.out.println("Nenhum serviço em andamento no momento.");
         else {
-            servicos.forEach(this::printServicoFormatado);
+            for (Servico s : servicos) {
+                System.out.println(s);
+            }
         }
     }
 
     private void visualizarMeusServicosConcluidos() throws SQLException {
         System.out.println("\n--- SERVIÇOS CONCLUÍDOS POR " + funcionarioLogado.getNome() + " ---");
 
+        // NOTA: Conforme solicitado, a lógica de busca e filtro foi mantida, sem
+        // alterar o Service.
         List<Servico> meusServicos = servicoService.buscarServicosPorFuncionario(funcionarioLogado.getId());
-        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus())).collect(Collectors.toList());
+        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus()))
+                .collect(Collectors.toList());
 
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");
         } else {
-            for (Servico s: concluidos){
-            System.out.println(s);
-            }
+            concluidos.forEach(this::printServicoFormatado);
         }
     }
+
     private void printServicoFormatado(Servico s) {
         System.out.println("----------------------------------------");
-        System.out.println(s);
-        
+        System.out.println("ID do Serviço: " + s.getIdServico());
+        System.out.println("Tipo: " + s.getTipo());
+        System.out.println("Status: " + s.getStatus());
+        System.out.printf("Preço: R$ %.2f\n", s.getPreco());
+
         if (s.getVeiculo() != null && s.getVeiculo().getModelo() != null) {
             System.out.println(
                     "Veículo: " + s.getVeiculo().getModelo() + " (Chassi: " + s.getVeiculo().getNumChassi() + ")");
