@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 /**
  * Camada de Serviço para a entidade Cliente.
  * Responsável por conter as regras de negócio, validações de dados
- * e orquestrar as operações, delegando a persistência para a camada de repositório.
+ * e orquestrar as operações, delegando a persistência para a camada de
+ * repositório.
  */
 public class ClienteService {
 
@@ -24,30 +25,64 @@ public class ClienteService {
     public ClienteService() {
         this.repository = new ClienteRepository();
         this.servicoRepository = new ServicoRepository();
-        this.veiculoRepository = new VeiculoRepository(); 
+        this.veiculoRepository = new VeiculoRepository();
     }
 
     /**
      * Valida os dados e cadastra um novo cliente.
      */
-    public void cadastrarCliente(String id, String nome, String email, String senha, String endereco, String telefone) throws SQLException, IllegalArgumentException {
+    public void cadastrarCliente(String id, String nome, String email, String senha, String endereco, String telefone)
+            throws SQLException, IllegalArgumentException {
         // Bloco de validações dos dados de entrada
-        if (id == null || id.trim().isEmpty()) throw new IllegalArgumentException("O ID do cliente não pode ser vazio.");
-        if (nome == null || nome.trim().isEmpty()) throw new IllegalArgumentException("O nome do cliente não pode ser vazio.");
-        if (email == null || !Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email)) {
+        if (id == null || id.trim().isEmpty())
+            throw new IllegalArgumentException("O ID do cliente não pode ser vazio.");
+
+        // só dígitos e não pode começar com zero
+        if (!id.matches("^[1-9]\\d{0,9}$"))
+            throw new IllegalArgumentException("ID deve ser número inteiro positivo sem zeros à esquerda.");
+
+        if (nome == null || nome.trim().isEmpty())
+            throw new IllegalArgumentException("O nome não pode ser vazio.");
+
+        if (!nome.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$")) 
+            throw new IllegalArgumentException("O nome só pode conter letras e espaços.");
+
+        if (nome.contains("  ")) 
+            throw new IllegalArgumentException("O nome não pode conter espaços duplos.");
+        
+        if (endereco == null || endereco.trim().isEmpty())
+            throw new IllegalArgumentException("O endereço não pode ser vazio.");
+
+        if (!endereco.matches("^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.-]+$"))
+            throw new IllegalArgumentException("O endereço só pode conter letras, números, espaços, vírgulas, pontos e hífens.");
+
+        if (endereco.contains("  ")) 
+            throw new IllegalArgumentException("O endereço não pode conter espaços duplos.");
+        
+        if (telefone == null || telefone.trim().isEmpty()) 
+            throw new IllegalArgumentException("O telefone não pode ser vazio.");
+        
+        if (!telefone.matches("^\\+?\\d{8,15}$")) 
+            throw new IllegalArgumentException( "Telefone inválido. Deve conter apenas dígitos (8–15 caracteres), " + "podendo começar com '+' para código de país.");
+
+        if (email == null || !Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email)) 
             throw new IllegalArgumentException("Formato de e-mail inválido.");
-        }
-        if (senha == null || senha.length() < 6) throw new IllegalArgumentException("A senha deve ter no mínimo 6 caracteres.");
+
+        if (senha == null || senha.length() < 6)
+            throw new IllegalArgumentException("A senha deve ter no mínimo 6 caracteres.");
 
         // Regra de negócio: não permitir cadastro com ID ou email duplicado
-        if (repository.findById(id) != null) throw new IllegalArgumentException("Já existe um cliente com este ID.");
-        if (repository.findByEmail(email) != null) throw new IllegalArgumentException("Já existe um cliente com este e-mail.");
+        if (repository.findById(id) != null)
+            throw new IllegalArgumentException("Já existe um cliente com este ID.");
+
+        if (repository.findByEmail(email) != null)
+            throw new IllegalArgumentException("Já existe um cliente com este e-mail.");
 
         // Se tudo estiver válido, cria o objeto e delega a persistência ao repositório
         Cliente novoCliente = new Cliente(id, nome, email, senha, endereco, telefone);
         repository.save(novoCliente);
     }
-
+    
     /**
      * Retorna uma lista com todos os clientes.
      */
@@ -69,7 +104,8 @@ public class ClienteService {
     /**
      * Valida e atualiza os dados de um cliente existente.
      */
-    public void atualizarCliente(String id, String novoNome, String novoEmail, String novaSenha, String novoEndereco, String novoTelefone) throws SQLException, IllegalArgumentException {
+    public void atualizarCliente(String id, String novoNome, String novoEmail, String novaSenha, String novoEndereco,
+            String novoTelefone) throws SQLException, IllegalArgumentException {
         // Primeiro, busca o cliente para garantir que ele existe
         Cliente cliente = buscarClientePorId(id);
 
@@ -98,31 +134,29 @@ public class ClienteService {
         // Garante que o cliente existe
         buscarClientePorId(id);
 
+        // Esta verificação é uma regra de negócio CRÍTICA para evitar a exclusão de
+        // clientes com veículos ativos.
 
-         // Esta verificação é uma regra de negócio CRÍTICA para evitar a exclusão de clientes com veículos ativos.
-         
-          int quantidadeVeiculos = veiculoRepository.countByClienteId(id);
-          if (quantidadeVeiculos > 0) {
-          throw new IllegalStateException("Não é possível remover cliente que possui " + quantidadeVeiculos + " veículo(s) cadastrado(s).");
-          }
-        
+        int quantidadeVeiculos = veiculoRepository.countByClienteId(id);
+        if (quantidadeVeiculos > 0) {
+            throw new IllegalStateException(
+                    "Não é possível remover cliente que possui " + quantidadeVeiculos + " veículo(s) cadastrado(s).");
+        }
 
         // Delega a exclusão ao repositório
         repository.delete(id);
     }
 
-   
+    /**
+     * Retorna uma lista de todos os serviços solicitados por um cliente específico.
+     * Orquestra a busca, primeiro validando a existência do cliente e depois
+     * consultando o repositório de serviços.
+     */
+    public List<Servico> verServicosSolicitados(String clienteId) throws SQLException {
+        // 1. Valida se o cliente existe
+        buscarClientePorId(clienteId);
 
-/**
- * Retorna uma lista de todos os serviços solicitados por um cliente específico.
- * Orquestra a busca, primeiro validando a existência do cliente e depois
- * consultando o repositório de serviços.
- */
-public List<Servico> verServicosSolicitados(String clienteId) throws SQLException {
-    // 1. Valida se o cliente existe
-    buscarClientePorId(clienteId);
-    
-    // 2. Chama o método do repositório (que agora existe) e retorna o resultado.
-    return servicoRepository.findByClienteId(clienteId);
-}
+        // 2. Chama o método do repositório (que agora existe) e retorna o resultado.
+        return servicoRepository.findByClienteId(clienteId);
+    }
 }
