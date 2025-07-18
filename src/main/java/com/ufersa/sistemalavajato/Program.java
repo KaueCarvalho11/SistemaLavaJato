@@ -58,7 +58,7 @@ public class Program {
                         clienteService.cadastrarCliente(ClienteId, ClienteNome, ClienteEmail, ClienteSenha, endereco,
                                 numeroTelefone);
 
-                        System.out.print("Cliente cadastrado.");
+                        System.out.println("Cliente cadastrado.");
                         break;
 
                     case 2:
@@ -90,11 +90,10 @@ public class Program {
                         if (authService.login(loginEmail, loginSenha)) {
                             System.out.println("\nLogin realizado com sucesso!");
                             System.out.println("Bem-vindo(a), " + userSession.getCurrentUser().getNome() + "!");
-
+                            
                             if (userSession.isFuncionario()) {
-                                FuncionarioUI funcionarioUI = new FuncionarioUI(
-                                        (Funcionario) userSession.getCurrentUser());
-                                funcionarioUI.menu();
+                                FuncionarioUI funcionarioUI = new FuncionarioUI((Funcionario) userSession.getCurrentUser());
+                                funcionarioUI.menu(); 
                                 authService.logout();
                                 System.out.println("Você foi deslogado.");
 
@@ -120,11 +119,8 @@ public class Program {
                         System.out.println("Opção inválida. Tente novamente");
                 }
             } catch (SQLException e) {
-                // Este erro é sobre o BANCO DE DADOS
-                System.err.println(
-                        "ERRO DE BANCO DE DADOS: Não foi possível completar a operação. Detalhe: " + e.getMessage());
+                System.err.println("ERRO DE BANCO DE DADOS: Não foi possível completar a operação. Detalhe: " + e.getMessage());
             } catch (IllegalArgumentException | IllegalStateException e) {
-                // Este erro é sobre DADOS INVÁLIDOS ou REGRAS DE NEGÓCIO
                 System.err.println("ERRO: " + e.getMessage());
             }
         }
