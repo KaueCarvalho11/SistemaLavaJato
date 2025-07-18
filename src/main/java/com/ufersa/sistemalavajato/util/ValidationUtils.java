@@ -24,6 +24,25 @@ public class ValidationUtils {
     }
 
     /**
+     * Validar se um telefone é válido
+     * 
+     * @param phone Número de telefone a ser validado
+     * @return true se válido, false caso contrário
+     */
+    public static boolean isValidPhoneNumber(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            return false;
+        }
+
+        // Remove todos os caracteres não numéricos (espaços, parênteses, traços, etc.)
+        String digitsOnly = phone.replaceAll("[^0-9]", "");
+
+        // Verifica se o número tem entre 8 e 15 dígitos após a remoção dos caracteres
+        // especiais
+        return digitsOnly.length() >= 8 && digitsOnly.length() <= 15;
+    }
+
+    /**
      * Valida se o nome é válido.
      * 
      * @param name Nome a ser validado

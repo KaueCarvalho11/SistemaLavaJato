@@ -12,11 +12,13 @@ public class Servico {
     private Veiculo veiculo;
     private Funcionario funcionario;
 
-    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario) {
+    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario, String formaPagamento, String descricao) {
         this.idServico = idServico;
         this.tipo = tipo;
         this.veiculo = veiculo;
         this.funcionario = funcionario;
+        this.formaPagamento = formaPagamento;
+        this.descricao = descricao;
     }
 
     // --- Getters e Setters ---
