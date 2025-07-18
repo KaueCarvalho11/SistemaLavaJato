@@ -2,14 +2,12 @@ package com.ufersa.sistemalavajato.auth;
 
 import com.ufersa.sistemalavajato.enums.TipoUsuario;
 import com.ufersa.sistemalavajato.model.Cliente;
-import com.ufersa.sistemalavajato.model.Funcionario;
 import com.ufersa.sistemalavajato.model.Usuario;
 import com.ufersa.sistemalavajato.repository.UsuarioRepository;
 import com.ufersa.sistemalavajato.util.PasswordUtils;
 import com.ufersa.sistemalavajato.util.ValidationUtils;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 /**
  * Serviço para gerenciar autenticação de usuários.
