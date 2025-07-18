@@ -24,12 +24,13 @@ public class FuncionarioUI {
     public void menu(){
         int op = -1;
         while(op != 0){
-            System.out.println("\n--- MENU DO FUNCIONÁRIO---");
-            System.out.println("(1) Iniciar serviço");
-            System.out.println("(2) Atualizar serviço (Concluir, Cancelar, Mudar Preço)");
-            System.out.println("(3) Visualizar serviços em andamento");
-            System.out.println("(4) Visualizar meus serviços concluídos");
-            System.out.println("(0) Deslogar e voltar ao menu principal");
+            System.out.println("\n--- MENU DO FUNCIONÁRIO: " + this.funcionarioLogado.getNome() + " ---");
+            System.out.println("(1) Iniciar Serviço");
+            System.out.println("(2) Atualizar Status de Serviço (Concluir/Cancelar)");
+            System.out.println("(3) Definir Preço de um Serviço");
+            System.out.println("(4) Visualizar Serviços em Andamento");
+            System.out.println("(5) Visualizar Meus Serviços Concluídos");
+            System.out.println("(0) Deslogar e Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
 
             try{
