@@ -210,12 +210,6 @@ public class ClienteUI {
         if (funcionarios.isEmpty()) {
             throw new IllegalStateException("Não há funcionários disponíveis no momento.");
         }
-<<<<<<< Updated upstream
-        Funcionario funcionarioAtribuido = funcionarios.get(0); // Atribui ao primeiro como padrão
-
-        servicoService.cadastrarServico(tipoServico, "Solicitado pelo cliente", precoBase, veiculoEscolhido, funcionarioAtribuido);
-        System.out.println("Serviço solicitado com sucesso para o funcionário " + funcionarioAtribuido.getNome() + "!");
-=======
 
         System.out.println("\n--- Funcionários Disponíveis ---");
         for (int i = 0; i < funcionarios.size(); i++) {
@@ -263,7 +257,6 @@ public class ClienteUI {
                 funcionarioAtribuido, metodoPagamento);
         System.out.println(
                 "Serviço solicitado com sucesso e atribuído ao funcionário: " + funcionarioAtribuido.getNome() + "!");
->>>>>>> Stashed changes
     }
 
     // USA O NOVO MÉTODO (necessário) clienteService.verServicosSolicitados()

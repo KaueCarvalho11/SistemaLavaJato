@@ -125,6 +125,11 @@ public class ServicoService {
             throw new IllegalStateException("Não é possível atualizar serviços concluídos");
         }
 
+        // Verifica se o serviço pode ser atualizado
+        if ("CONCLUIDO".equals(servico.getStatus())) {
+            throw new IllegalStateException("Não é possível atualizar serviços concluídos");
+        }
+
         // Validações
         if (tipo != null && !tipo.trim().isEmpty()) {
             servico.setTipo(tipo);
@@ -192,6 +197,7 @@ public class ServicoService {
     }
 
     /**
+     * /**
      * Exibe detalhes de um serviço específico.
      */
     public Servico exibirServicoAtual(int servicoId) throws SQLException {
