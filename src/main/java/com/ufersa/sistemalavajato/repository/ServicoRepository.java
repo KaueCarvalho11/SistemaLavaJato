@@ -235,4 +235,31 @@ public class ServicoRepository extends BaseRepository<Servico> {
 
 		return servico;
 	}
+
+/**
+ * Busca todos os serviços associados aos veículos de um cliente específico.
+ * @param clienteId O ID do cliente.
+ * @return Uma lista de serviços do cliente.
+ * @throws SQLException
+ */
+public List<Servico> findByClienteId(String clienteId) throws SQLException {
+    String sql = "SELECT s.*, " +
+             "v.num_chassi AS veiculo_num_chassi, " +
+             "v.modelo AS veiculo_modelo, " +
+             "v.cor AS veiculo_cor, " +
+             "v.id_cliente AS veiculo_id_cliente, " +
+             "v.quilometragem AS veiculo_quilometragem, " +
+             "v.preco AS veiculo_preco, " +
+             "v.ano_fabricacao AS veiculo_ano, " +
+             "v.status AS veiculo_status, " +
+             "f.id_usuario as funcionario_id, " + 
+             "u.nome as funcionario_nome " +
+             "FROM servicos s " +
+             "LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
+             "LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
+             "LEFT JOIN usuarios u ON f.id_usuario = u.id " +
+             "WHERE v.id_cliente = ? " +
+             "ORDER BY s.data_criacao DESC";
+    return findMany(sql, this::mapResultSetToServico, clienteId);
+}
 }
