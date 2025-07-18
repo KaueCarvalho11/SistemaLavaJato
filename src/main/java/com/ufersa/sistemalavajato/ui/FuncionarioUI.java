@@ -149,20 +149,15 @@ public class FuncionarioUI {
         if (servicos.isEmpty())
             System.out.println("Nenhum serviço em andamento no momento.");
         else {
-            for (Servico s : servicos) {
-                System.out.println(s);
-            }
+            servicos.forEach(this::printServicoFormatado);
         }
     }
 
     private void visualizarMeusServicosConcluidos() throws SQLException {
         System.out.println("\n--- SERVIÇOS CONCLUÍDOS POR " + funcionarioLogado.getNome() + " ---");
 
-        // NOTA: Conforme solicitado, a lógica de busca e filtro foi mantida, sem
-        // alterar o Service.
         List<Servico> meusServicos = servicoService.buscarServicosPorFuncionario(funcionarioLogado.getId());
-        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus()))
-                .collect(Collectors.toList());
+        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus())).collect(Collectors.toList());
 
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");
@@ -177,7 +172,7 @@ public class FuncionarioUI {
         System.out.println("Tipo: " + s.getTipo());
         System.out.println("Status: " + s.getStatus());
         System.out.printf("Preço: R$ %.2f\n", s.getPreco());
-
+        
         if (s.getVeiculo() != null && s.getVeiculo().getModelo() != null) {
             System.out.println(
                     "Veículo: " + s.getVeiculo().getModelo() + " (Chassi: " + s.getVeiculo().getNumChassi() + ")");
