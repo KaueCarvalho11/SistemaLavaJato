@@ -2,8 +2,12 @@ package com.ufersa.sistemalavajato;
 
 import com.ufersa.sistemalavajato.service.ClienteService;
 import com.ufersa.sistemalavajato.service.FuncionarioService;
+import com.ufersa.sistemalavajato.ui.ClienteUI;
+import com.ufersa.sistemalavajato.ui.FuncionarioUI;
 import com.ufersa.sistemalavajato.auth.AuthService;
 import com.ufersa.sistemalavajato.auth.UserSession;
+import com.ufersa.sistemalavajato.model.Funcionario;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.InputMismatchException;
@@ -53,7 +57,6 @@ public class Program {
 
                         clienteService.cadastrarCliente(ClienteId, ClienteNome, ClienteEmail, ClienteSenha, endereco,
                                 numeroTelefone);
-                        
 
                         System.out.print("Cliente cadastrado.");
                         break;
@@ -74,7 +77,7 @@ public class Program {
                         funcionarioService.cadastrarFuncionario(funcionarioId, funcionarioNome, funcionarioEmail,
                                 funcionarioSenha);
 
-                        System.out.print("Funcionário cadastrado.");
+                        System.out.println("Funcionário cadastrado.");
                         break;
 
                     case 3:
@@ -85,11 +88,26 @@ public class Program {
                         String loginSenha = input.nextLine();
 
                         if (authService.login(loginEmail, loginSenha)) {
-                            System.out.println("Login realizado com sucesso!");
-                            System.out.println("Bem-vindo, " + userSession.getCurrentUser().getNome() + "!");
-                            System.out.println("Tipo de usuário: " + userSession.getUserType());
+                            System.out.println("\nLogin realizado com sucesso!");
+                            System.out.println("Bem-vindo(a), " + userSession.getCurrentUser().getNome() + "!");
+
+                            if (userSession.isFuncionario()) {
+                                FuncionarioUI funcionarioUI = new FuncionarioUI(
+                                        (Funcionario) userSession.getCurrentUser());
+                                funcionarioUI.menu();
+                                authService.logout();
+                                System.out.println("Você foi deslogado.");
+
+                            } else if (userSession.isCliente()) {
+                                ClienteUI clienteUI = new ClienteUI(
+                                        (com.ufersa.sistemalavajato.model.Cliente) userSession.getCurrentUser());
+                                clienteUI.menu();
+                                authService.logout();
+                                System.out.println("Você foi deslogado.");
+                            }
+
                         } else {
-                            System.out.println("Email ou senha incorretos. Tente novamente.");
+                            System.err.println("Email ou senha incorretos. Tente novamente.");
                         }
                         break;
 
@@ -102,9 +120,12 @@ public class Program {
                         System.out.println("Opção inválida. Tente novamente");
                 }
             } catch (SQLException e) {
-                System.out.println("Dados inválidos.");
-            } catch (IllegalArgumentException e) {
-                System.out.println("Não foi possível acessar o banco de dados");
+                // Este erro é sobre o BANCO DE DADOS
+                System.err.println(
+                        "ERRO DE BANCO DE DADOS: Não foi possível completar a operação. Detalhe: " + e.getMessage());
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                // Este erro é sobre DADOS INVÁLIDOS ou REGRAS DE NEGÓCIO
+                System.err.println("ERRO: " + e.getMessage());
             }
         }
     }

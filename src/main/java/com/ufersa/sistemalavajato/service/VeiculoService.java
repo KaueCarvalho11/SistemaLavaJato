@@ -110,4 +110,13 @@ public class VeiculoService {
     public List<Veiculo> listarTodosVeiculos() throws SQLException {
         return repository.findAll();
     }
+
+    // Adicione este método à sua classe VeiculoService
+
+public List<Veiculo> listarVeiculosPorCliente(String clienteId) throws SQLException {
+    if (clienteId == null || clienteId.trim().isEmpty()) {
+        throw new IllegalArgumentException("O ID do cliente não pode ser vazio.");
+    }
+    return repository.findByClienteId(clienteId);
+}
 }
