@@ -9,16 +9,17 @@ public class Servico {
     private String status;
     private String formaPagamento;
     private String tipo;
-    DecimalFormat df = new DecimalFormat("#.00");
-
     private Veiculo veiculo;
     private Funcionario funcionario;
+    DecimalFormat df = new DecimalFormat("0.00");
 
-    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario) {
+    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario, String formaPagamento, String descricao) {
         this.idServico = idServico;
         this.tipo = tipo;
         this.veiculo = veiculo;
         this.funcionario = funcionario;
+        this.formaPagamento = formaPagamento;
+        this.descricao = descricao;
     }
 
     // --- Getters e Setters ---

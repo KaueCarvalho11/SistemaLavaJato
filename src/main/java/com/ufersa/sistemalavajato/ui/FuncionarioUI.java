@@ -23,7 +23,7 @@ public class FuncionarioUI {
 
     public void menu() {
         int op = -1;
-        while(op != 0){
+        while (op != 0) {
             System.out.println("\n--- MENU DO FUNCIONÁRIO: " + this.funcionarioLogado.getNome() + " ---");
             System.out.println("(1) Iniciar Serviço");
             System.out.println("(2) Atualizar Status de Serviço (Concluir/Cancelar)");
@@ -55,7 +55,6 @@ public class FuncionarioUI {
                         break;
                     case 0:
                         System.out.println("Deslogando...");
-                        ;
                         break;
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
@@ -64,20 +63,40 @@ public class FuncionarioUI {
             } catch (InputMismatchException e) {
                 System.err.println("Entrada inválida. Por favor, digite um número.");
                 sc.nextLine();
-            }
-            // permite capturar e tratar diferentes tipos de exceções
-            catch (SQLException | IllegalArgumentException | IllegalStateException e) {
+            } catch (SQLException | IllegalArgumentException | IllegalStateException e) {
                 System.err.println("ERRO: " + e.getMessage());
             }
         }
     }
 
     private void iniciarServico() throws SQLException {
-        System.out.print("Digite o ID do serviço para iniciar: ");
-        int servicoId = sc.nextInt();
-        sc.nextLine();
-        servicoService.iniciarServico(servicoId);
-        System.out.println("Serviço ID " + servicoId + " iniciado com sucesso!");
+        System.out.println("\n--- INICIAR UM SERVIÇO ---");
+
+        List<Servico> servicosPendentes = servicoService.listarServicosPendentes();
+
+        if (servicosPendentes.isEmpty()) {
+            System.out.println("Não há serviços pendentes no momento.");
+            return; 
+        }
+
+        System.out.println("Serviços pendentes disponíveis:");
+        servicosPendentes.forEach(this::printServicoFormatado);
+        System.out.print("\nDigite o ID do serviço que deseja iniciar (ou 0 para cancelar): ");
+        
+        try {
+            int servicoId = sc.nextInt();
+            sc.nextLine(); 
+            if (servicoId == 0) {
+                System.out.println("Operação cancelada.");
+                return;
+            }
+            servicoService.iniciarServico(servicoId);
+            System.out.println("\n✓ Serviço ID " + servicoId + " iniciado com sucesso!");
+        } 
+        catch (InputMismatchException e) {
+            System.err.println("ERRO: Por favor, digite um número de ID válido.");
+            sc.nextLine(); // Limpa o buffer em caso de erro de digitação
+        }
     }
 
     private void atualizarStatusServico() throws SQLException {
@@ -149,7 +168,9 @@ public class FuncionarioUI {
         if (servicos.isEmpty())
             System.out.println("Nenhum serviço em andamento no momento.");
         else {
-            servicos.forEach(this::printServicoFormatado);
+            for (Servico s : servicos) {
+                System.out.println(s);
+            }
         }
     }
 
@@ -157,7 +178,8 @@ public class FuncionarioUI {
         System.out.println("\n--- SERVIÇOS CONCLUÍDOS POR " + funcionarioLogado.getNome() + " ---");
 
         List<Servico> meusServicos = servicoService.buscarServicosPorFuncionario(funcionarioLogado.getId());
-        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus())).collect(Collectors.toList());
+        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus()))
+                .collect(Collectors.toList());
 
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");

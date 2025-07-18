@@ -276,10 +276,11 @@ public class ServicoRepository extends BaseRepository<Servico> {
 				rs.getInt("id_servico"),
 				rs.getString("tipo"),
 				veiculo,
-				funcionario);
+				funcionario,
+				rs.getString("forma_pagamento"), 
+				rs.getString("descricao"));
 
 		// Define outros atributos
-		servico.setDescricao(rs.getString("descricao"));
 		servico.setPreco(rs.getDouble("preco"));
 		servico.setStatus(rs.getString("status"));
 		servico.setFormaPagamento(rs.getString("forma_pagamento"));
