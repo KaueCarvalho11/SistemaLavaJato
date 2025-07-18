@@ -162,16 +162,14 @@ public class FuncionarioUI {
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");
         } else {
-            concluidos.forEach(this::printServicoFormatado);
+            for (Servico s: concluidos){
+            System.out.println(s);
+            }
         }
     }
-
     private void printServicoFormatado(Servico s) {
         System.out.println("----------------------------------------");
-        System.out.println("ID do Serviço: " + s.getIdServico());
-        System.out.println("Tipo: " + s.getTipo());
-        System.out.println("Status: " + s.getStatus());
-        System.out.printf("Preço: R$ %.2f\n", s.getPreco());
+        System.out.println(s);
         
         if (s.getVeiculo() != null && s.getVeiculo().getModelo() != null) {
             System.out.println(

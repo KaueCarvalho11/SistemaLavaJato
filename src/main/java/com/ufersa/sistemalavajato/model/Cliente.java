@@ -58,9 +58,8 @@ public class Cliente extends Usuario {
      */
     @Override
     public String toString() {
-        return "Cliente: " + getNome() + "\n" +
-                "Email: " + getEmail() + "\n" +
-                "Endereço: " + endereco + "\n" +
-                "Telefone: " + numeroTelefone;
+        return super.toString() + 
+                "\nEndereço: " + endereco + 
+                "\nTelefone: " + numeroTelefone;
     }
 }
