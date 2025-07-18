@@ -4,7 +4,7 @@ import com.ufersa.sistemalavajato.model.Cliente;
 import com.ufersa.sistemalavajato.model.Servico;
 import com.ufersa.sistemalavajato.repository.ClienteRepository;
 import com.ufersa.sistemalavajato.repository.ServicoRepository;
-// import com.ufersa.sistemalavajato.repository.VeiculoRepository; // Import comentado até a classe ser criada.
+import com.ufersa.sistemalavajato.repository.VeiculoRepository; // Import comentado até a classe ser criada.
 import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -19,12 +19,12 @@ public class ClienteService {
     // Dependências necessárias para as operações de cliente.
     private final ClienteRepository repository;
     private final ServicoRepository servicoRepository;
-    // private final VeiculoRepository veiculoRepository; // Comentado até a classe ser criada.
+    private final VeiculoRepository veiculoRepository; // Comentado até a classe ser criada.
 
     public ClienteService() {
         this.repository = new ClienteRepository();
         this.servicoRepository = new ServicoRepository();
-        // this.veiculoRepository = new VeiculoRepository(); // Comentado até a classe ser criada.
+        this.veiculoRepository = new VeiculoRepository(); 
     }
 
     /**
@@ -98,34 +98,31 @@ public class ClienteService {
         // Garante que o cliente existe
         buscarClientePorId(id);
 
-        /*
-         * // TODO: Descomentar e implementar esta lógica quando a classe VeiculoRepository estiver pronta.
-         * // Esta verificação é uma regra de negócio CRÍTICA para evitar a exclusão de clientes com veículos ativos.
-         *
-         * int quantidadeVeiculos = veiculoRepository.countByClienteId(id);
-         * if (quantidadeVeiculos > 0) {
-         * throw new IllegalStateException("Não é possível remover cliente que possui " + quantidadeVeiculos + " veículo(s) cadastrado(s).");
-         * }
-        */
+
+         // Esta verificação é uma regra de negócio CRÍTICA para evitar a exclusão de clientes com veículos ativos.
+         
+          int quantidadeVeiculos = veiculoRepository.countByClienteId(id);
+          if (quantidadeVeiculos > 0) {
+          throw new IllegalStateException("Não é possível remover cliente que possui " + quantidadeVeiculos + " veículo(s) cadastrado(s).");
+          }
+        
 
         // Delega a exclusão ao repositório
         repository.delete(id);
     }
 
-    /**
-     * Retorna uma lista de todos os serviços solicitados por um cliente específico.
-     * Orquestra a busca, primeiro validando a existência do cliente e depois
-     * consultando o repositório de serviços.
-     */
-    public List<Servico> verServicosSolicitados(String clienteId) throws SQLException {
-    // Valida se o cliente existe
+   
+
+/**
+ * Retorna uma lista de todos os serviços solicitados por um cliente específico.
+ * Orquestra a busca, primeiro validando a existência do cliente e depois
+ * consultando o repositório de serviços.
+ */
+public List<Servico> verServicosSolicitados(String clienteId) throws SQLException {
+    // 1. Valida se o cliente existe
     buscarClientePorId(clienteId);
     
-    /*
-     * TODO: Implementação temporariamente desativada 
-     * return servicoRepository.findByClienteId(clienteId);
-     */
-    throw new UnsupportedOperationException("Funcionalidade de serviços por cliente temporariamente desativada ");
-    // return Collections.emptyList(); // Alternativa: retornar lista vazia
+    // 2. Chama o método do repositório (que agora existe) e retorna o resultado.
+    return servicoRepository.findByClienteId(clienteId);
 }
 }
