@@ -15,15 +15,15 @@ public class FuncionarioUI {
     private final ServicoService servicoService;
     private final Scanner sc;
 
-    public FuncionarioUI(Funcionario funcionarioLogado){
+    public FuncionarioUI(Funcionario funcionarioLogado) {
         this.funcionarioLogado = funcionarioLogado;
         this.servicoService = new ServicoService();
         this.sc = new Scanner(System.in);
     }
 
-    public void menu(){
+    public void menu() {
         int op = -1;
-        while(op != 0){
+        while (op != 0) {
             System.out.println("\n--- MENU DO FUNCIONÁRIO---");
             System.out.println("(1) Iniciar serviço");
             System.out.println("(2) Atualizar serviço (Concluir, Cancelar, Mudar Preço)");
@@ -32,7 +32,7 @@ public class FuncionarioUI {
             System.out.println("(0) Deslogar e voltar ao menu principal");
             System.out.print("Escolha uma opção: ");
 
-            try{
+            try {
                 op = sc.nextInt();
                 sc.nextLine();
 
@@ -53,25 +53,25 @@ public class FuncionarioUI {
                         visualizarMeusServicosConcluidos();
                         break;
                     case 0:
-                        System.out.println("Deslogando...");;
+                        System.out.println("Deslogando...");
+                        ;
                         break;
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
                         break;
                 }
-            }
-            catch(InputMismatchException e){
+            } catch (InputMismatchException e) {
                 System.err.println("Entrada inválida. Por favor, digite um número.");
                 sc.nextLine();
             }
             // permite capturar e tratar diferentes tipos de exceções
-            catch(SQLException | IllegalArgumentException | IllegalStateException e){
+            catch (SQLException | IllegalArgumentException | IllegalStateException e) {
                 System.err.println("ERRO: " + e.getMessage());
             }
         }
     }
 
-    private void iniciarServico() throws SQLException{
+    private void iniciarServico() throws SQLException {
         System.out.print("Digite o ID do serviço para iniciar: ");
         int servicoId = sc.nextInt();
         sc.nextLine();
@@ -79,7 +79,7 @@ public class FuncionarioUI {
         System.out.println("Serviço ID " + servicoId + " iniciado com sucesso!");
     }
 
-    private void atualizarStatusServico() throws SQLException{
+    private void atualizarStatusServico() throws SQLException {
         System.out.print("Digite o ID do serviço para atualizar: ");
         int servicoId = sc.nextInt();
         sc.nextLine();
@@ -92,71 +92,63 @@ public class FuncionarioUI {
 
         switch (subOp) {
             case 1:
-                try{
+                try {
                     servicoService.concluirServico(servicoId);
                     System.out.println("Serviço concluído!");
-                }
-                catch(SQLException e){
+                } catch (SQLException e) {
                     System.err.println("Erro de banco de dados ao tentar concluir o serviço: " + e.getMessage());
-                }
-                catch(IllegalStateException e){
+                } catch (IllegalStateException e) {
                     System.err.println("Erro de regra de negócio: " + e.getMessage());
                 }
                 break;
 
             case 2:
-                try{
-                    System.out.println("Informe o motivo da cancelamento: ");
-                    String motivo = sc.nextLine();
-                    servicoService.cancelarServico(servicoId, motivo);
+                try {
+                    servicoService.cancelarServico(servicoId);
                     System.out.println("Serviço cancelado!");
-                }
-                catch(SQLException e){
+                } catch (SQLException e) {
                     System.err.println("Erro de banco de dados ao tentar cancelar o serviço: " + e.getMessage());
-                }
-                catch(IllegalStateException e){
+                } catch (IllegalStateException e) {
                     System.err.println("Erro de regra de negócio: " + e.getMessage());
                 }
                 break;
-        
+
             default:
                 System.out.println("Opção de atualização inválida.");
                 break;
         }
     }
 
-    private void definirPreco() throws SQLException{
+    private void definirPreco() throws SQLException {
         try {
             System.out.print("Digite o ID do serviço para DEFINIR O PREÇO: ");
             int servicoId = sc.nextInt();
-            sc.nextLine(); 
+            sc.nextLine();
 
             System.out.print("Digite o novo preço: R$ ");
             double novoPreco = sc.nextDouble();
-            sc.nextLine(); 
+            sc.nextLine();
 
             servicoService.atualizarServico(servicoId, null, null, novoPreco, null);
             System.out.println("Preço do serviço atualizado com sucesso!");
-        } 
-        catch (InputMismatchException e) {
+        } catch (InputMismatchException e) {
             System.err.println("ERRO DE ENTRADA: Por favor, digite um número válido para o ID ou preço.");
             sc.nextLine(); // Garante a limpeza do buffer para a próxima tentativa.
-        } 
-        catch (SQLException e) {
+        } catch (SQLException e) {
             // CORREÇÃO: Mensagem de erro ajustada para a operação correta.
             System.err.println("ERRO DE BANCO DE DADOS: Não foi possível atualizar o preço. " + e.getMessage());
-        } 
-        catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             System.err.println("ERRO: " + e.getMessage());
         }
     }
 
-    private void visualizarServicosEmAndamento() throws SQLException{
+    private void visualizarServicosEmAndamento() throws SQLException {
         System.out.println("\n--- SERVIÇOS EM ANDAMENTO ---");
         List<Servico> servicos = servicoService.listarServicosEmAndamento();
-        if(servicos.isEmpty()) System.out.println("Nenhum serviço em andamento no momento.");
-        else{
-            for(Servico s : servicos){
+        if (servicos.isEmpty())
+            System.out.println("Nenhum serviço em andamento no momento.");
+        else {
+            for (Servico s : servicos) {
                 System.out.println(s);
             }
         }
@@ -165,14 +157,16 @@ public class FuncionarioUI {
     private void visualizarMeusServicosConcluidos() throws SQLException {
         System.out.println("\n--- SERVIÇOS CONCLUÍDOS POR " + funcionarioLogado.getNome() + " ---");
 
-        // NOTA: Conforme solicitado, a lógica de busca e filtro foi mantida, sem alterar o Service.
+        // NOTA: Conforme solicitado, a lógica de busca e filtro foi mantida, sem
+        // alterar o Service.
         List<Servico> meusServicos = servicoService.buscarServicosPorFuncionario(funcionarioLogado.getId());
-        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus())).collect(Collectors.toList());
-        
+        List<Servico> concluidos = meusServicos.stream().filter(s -> "CONCLUIDO".equals(s.getStatus()))
+                .collect(Collectors.toList());
+
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");
         } else {
-            concluidos.forEach(this::printServicoFormatado); 
+            concluidos.forEach(this::printServicoFormatado);
         }
     }
 
@@ -182,9 +176,10 @@ public class FuncionarioUI {
         System.out.println("Tipo: " + s.getTipo());
         System.out.println("Status: " + s.getStatus());
         System.out.printf("Preço: R$ %.2f\n", s.getPreco());
-        
+
         if (s.getVeiculo() != null && s.getVeiculo().getModelo() != null) {
-            System.out.println("Veículo: " + s.getVeiculo().getModelo() + " (Chassi: " + s.getVeiculo().getNumChassi() + ")");
+            System.out.println(
+                    "Veículo: " + s.getVeiculo().getModelo() + " (Chassi: " + s.getVeiculo().getNumChassi() + ")");
         } else {
             System.out.println("Veículo: (não especificado)");
         }

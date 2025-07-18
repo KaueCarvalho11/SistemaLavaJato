@@ -21,9 +21,9 @@ public class ServicoService {
     /**
      * Cadastra um novo serviço.
      */
-    public void cadastrarServico(String tipo, String descricao, double preco, 
-                                Veiculo veiculo, Funcionario funcionario) throws SQLException {
-        // Validações
+    public void cadastrarServico(String tipo, String descricao, double preco,
+            Veiculo veiculo, Funcionario funcionario) throws SQLException {
+        // Validações básicas
         if (tipo == null || tipo.trim().isEmpty()) {
             throw new IllegalArgumentException("Tipo do serviço não pode ser vazio");
         }
@@ -51,13 +51,13 @@ public class ServicoService {
      * Inicia um serviço.
      */
     public void iniciarServico(int servicoId) throws SQLException {
-        // Verifica se o serviço existe
-        if (!servicoRepository.existsById(servicoId)) {
+        // Busca o serviço e verifica se existe
+        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
+        if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
         // Verifica se pode ser iniciado
-        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (!"PENDENTE".equals(servico.getStatus())) {
             throw new IllegalStateException("Só é possível iniciar serviços pendentes");
         }
@@ -69,14 +69,14 @@ public class ServicoService {
     /**
      * Cancela um serviço.
      */
-    public void cancelarServico(int servicoId, String motivo) throws SQLException {
-        // Verifica se o serviço existe
-        if (!servicoRepository.existsById(servicoId)) {
+    public void cancelarServico(int servicoId) throws SQLException {
+        // Busca o serviço e verifica se existe
+        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
+        if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
         // Verifica se pode ser cancelado
-        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if ("CONCLUIDO".equals(servico.getStatus())) {
             throw new IllegalStateException("Não é possível cancelar serviços concluídos");
         }
@@ -89,13 +89,13 @@ public class ServicoService {
      * Conclui um serviço.
      */
     public void concluirServico(int servicoId) throws SQLException {
-        // Verifica se o serviço existe
-        if (!servicoRepository.existsById(servicoId)) {
+        // Busca o serviço e verifica se existe
+        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
+        if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
         // Verifica se pode ser concluído
-        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (!"EM_ANDAMENTO".equals(servico.getStatus())) {
             throw new IllegalStateException("Só é possível concluir serviços em andamento");
         }
@@ -107,12 +107,17 @@ public class ServicoService {
     /**
      * Atualiza informações de um serviço.
      */
-    public void atualizarServico(int servicoId, String tipo, String descricao, 
-                                double preco, String formaPagamento) throws SQLException {
+    public void atualizarServico(int servicoId, String tipo, String descricao,
+            double preco, String formaPagamento) throws SQLException {
         // Busca o serviço
         Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
+        }
+
+        // Verifica se o serviço pode ser atualizado
+        if ("CONCLUIDO".equals(servico.getStatus())) {
+            throw new IllegalStateException("Não é possível atualizar serviços concluídos");
         }
 
         // Validações
@@ -181,7 +186,7 @@ public class ServicoService {
         return servicoRepository.findByFuncionario(funcionarioId);
     }
 
-       /**
+    /**
      * Exibe detalhes de um serviço específico.
      */
     public Servico exibirServicoAtual(int servicoId) throws SQLException {
