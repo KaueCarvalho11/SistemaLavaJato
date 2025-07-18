@@ -1,4 +1,5 @@
 package com.ufersa.sistemalavajato.model;
+import java.text.DecimalFormat;
 
 public class Veiculo {
     // Atributos
@@ -10,6 +11,7 @@ public class Veiculo {
     private String cor;
     private int anoFabricacao;
     private String status;
+    DecimalFormat df = new DecimalFormat("0.00");
 
     // Construtor
     public Veiculo(String idCliente, String modelo, int numChassi, double quilometragem, double preco, String cor, int anoFabricacao, String status) {
@@ -90,13 +92,13 @@ public class Veiculo {
     // Método auxiliar
     @Override
     public String toString() {
-        return "idCliente: " + idCliente +
+        return "id: " + idCliente +
                 "\nModelo: " + modelo +
-                "\nNumChassi: " + numChassi +
+                "\nNúmero do Chassi: " + numChassi +
                 "\nQuilometragem: " + quilometragem +
-                "\nPreco: " + preco +
+                "\nPreço: " + df.format(preco) +
                 "\nCor: " + cor +
-                "\nAnoFabricacao: " + anoFabricacao +
+                "\nAno de Fabricação: " + anoFabricacao +
                 "\nStatus: " + status;
     }
 }

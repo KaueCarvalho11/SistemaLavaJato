@@ -1,4 +1,5 @@
 package com.ufersa.sistemalavajato.model;
+import java.text.DecimalFormat;
 
 public class Servico {
 
@@ -8,6 +9,7 @@ public class Servico {
     private String status;
     private String formaPagamento;
     private String tipo;
+    DecimalFormat df = new DecimalFormat("#.00");
 
     private Veiculo veiculo;
     private Funcionario funcionario;
@@ -86,14 +88,13 @@ public class Servico {
 
     @Override
     public String toString() {
-        return "IdServico: " + idServico +
-                "\nDescricao: " + descricao +
-                "\nPreco: R$" + preco +
+        return "Id: " + idServico +
+                "\nDescrição: " + descricao +
+                "\nPreço: R$" + df.format(preco) +
                 "\nStatus: " + status +
-                "\nFormaPagamento: " + formaPagamento + 
+                "\nForma de Pagamento: " + formaPagamento + 
                 "\nTipo: " + tipo + 
-                "\nVeiculo: " + veiculo +
-                "\nFuncionario: " + funcionario;
+                "\nVeiculo: " + veiculo.getModelo() +
+                "\nFuncionário: " + funcionario.getNome();
     }
-
 }

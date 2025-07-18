@@ -187,17 +187,30 @@ public class ClienteUI {
             default: throw new IllegalArgumentException("Opção de serviço inválida.");
         }
 
-        List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
+       List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
         if (funcionarios.isEmpty()) {
             throw new IllegalStateException("Não há funcionários disponíveis no momento.");
         }
-        Funcionario funcionarioAtribuido = funcionarios.get(0); // Atribui ao primeiro como padrão
+
+        System.out.println("\n--- Funcionários Disponíveis ---");
+        for (int i = 0; i < funcionarios.size(); i++) {
+            System.out.printf("(%d) - %s\n", i + 1, funcionarios.get(i).getNome());
+        }
+
+        System.out.print("Escolha um funcionário (digite o número): ");
+        int indiceEscolhido = sc.nextInt() - 1; 
+        sc.nextLine(); 
+
+        if (indiceEscolhido < 0 || indiceEscolhido >= funcionarios.size()) {
+            throw new IllegalArgumentException("Opção de funcionário inválida.");
+        }
+
+        Funcionario funcionarioAtribuido = funcionarios.get(indiceEscolhido); 
 
         servicoService.cadastrarServico(tipoServico, "Solicitado pelo cliente", precoBase, veiculoEscolhido, funcionarioAtribuido);
-        System.out.println("Serviço solicitado com sucesso para o funcionário " + funcionarioAtribuido.getNome() + "!");
+        System.out.println("Serviço solicitado com sucesso e atribuído ao funcionário: " + funcionarioAtribuido.getNome() + "!");
     }
 
-    // USA O NOVO MÉTODO (necessário) clienteService.verServicosSolicitados()
     private void visualizarMeusServicos() throws SQLException {
         System.out.println("\n--- MEUS SERVIÇOS SOLICITADOS ---");
         List<Servico> servicos = clienteService.verServicosSolicitados(clienteLogado.getId());
