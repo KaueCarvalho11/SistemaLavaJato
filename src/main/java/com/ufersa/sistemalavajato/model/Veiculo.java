@@ -90,6 +90,13 @@ public class Veiculo {
     // Método auxiliar
     @Override
     public String toString() {
-        return "Veiculo{idCliente = " + idCliente + "modelo = " + modelo + ", numChassi = " + numChassi + ", quilometragem = " + quilometragem + ", preco = " + preco + ", cor = " + cor + ", anoFabricacao = " +anoFabricacao + ", status = " + status + "}";
+        return "idCliente: " + idCliente +
+                "\nModelo: " + modelo +
+                "\nNumChassi: " + numChassi +
+                "\nQuilometragem: " + quilometragem +
+                "\nPreco: " + preco +
+                "\nCor: " + cor +
+                "\nAnoFabricacao: " + anoFabricacao +
+                "\nStatus: " + status;
     }
 }

@@ -179,10 +179,7 @@ public class FuncionarioUI {
 
     private void printServicoFormatado(Servico s) {
         System.out.println("----------------------------------------");
-        System.out.println("ID do Serviço: " + s.getIdServico());
-        System.out.println("Tipo: " + s.getTipo());
-        System.out.println("Status: " + s.getStatus());
-        System.out.printf("Preço: R$ %.2f\n", s.getPreco());
+        System.out.println(s);
         
         if (s.getVeiculo() != null && s.getVeiculo().getModelo() != null) {
             System.out.println("Veículo: " + s.getVeiculo().getModelo() + " (Chassi: " + s.getVeiculo().getNumChassi() + ")");

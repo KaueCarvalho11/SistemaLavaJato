@@ -86,9 +86,14 @@ public class Servico {
 
     @Override
     public String toString() {
-        return "Servico [idServico=" + idServico + ", descricao=" + descricao + ", preco=" + preco + ", status="
-                + status + ", formaPagamento=" + formaPagamento + ", tipo=" + tipo + ", veiculo=" + veiculo
-                + ", funcionario=" + funcionario + "]";
+        return "IdServico: " + idServico +
+                "\nDescricao: " + descricao +
+                "\nPreco: R$" + preco +
+                "\nStatus: " + status +
+                "\nFormaPagamento: " + formaPagamento + 
+                "\nTipo: " + tipo + 
+                "\nVeiculo: " + veiculo +
+                "\nFuncionario: " + funcionario;
     }
 
 }

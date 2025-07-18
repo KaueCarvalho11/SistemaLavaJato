@@ -16,9 +16,6 @@ public class Funcionario extends Usuario {
 
     @Override
     public String toString() {
-        return "ID: " + getId() +
-                "\nNome: " + getNome() +
-                "\nEmail: " + getEmail() +
-                "\nSenha=" + getSenha();
+        return super.toString();
     }
 }
