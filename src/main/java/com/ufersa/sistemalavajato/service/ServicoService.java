@@ -162,23 +162,13 @@ public class ServicoService {
     }
 
     /**
-     * Busca serviços por tipo.
-     */
-    public List<Servico> buscarServicosPorTipo(String tipo) throws SQLException {
-        if (tipo == null || tipo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo não pode ser vazio");
-        }
-        return servicoRepository.findByTipo(tipo);
-    }
-
-    /**
      * Busca serviços por veículo.
      */
-    public List<Servico> buscarServicosPorVeiculo(String veiculoId) throws SQLException {
-        if (veiculoId == null || veiculoId.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do veículo não pode ser vazio");
+    public List<Servico> buscarServicosPorVeiculo(int numChassi) throws SQLException {
+        if (numChassi <= 0) {
+            throw new IllegalArgumentException("Número do chassi inválido");
         }
-        return servicoRepository.findByVeiculo(veiculoId);
+        return servicoRepository.findByVeiculo(numChassi);
     }
 
     /**
@@ -191,22 +181,7 @@ public class ServicoService {
         return servicoRepository.findByFuncionario(funcionarioId);
     }
 
-    /**
-     * Busca serviços por faixa de preço.
-     */
-    public List<Servico> buscarServicosPorPreco(double precoMin, double precoMax) throws SQLException {
-        if (precoMin < 0 || precoMax < 0 || precoMin > precoMax) {
-            throw new IllegalArgumentException("Faixa de preço inválida");
-        }
-        
-        // Como não temos o método no repository, vamos buscar todos e filtrar
-        List<Servico> todosServicos = servicoRepository.findAll();
-        return todosServicos.stream()
-                .filter(s -> s.getPreco() >= precoMin && s.getPreco() <= precoMax)
-                .toList();
-    }
-
-    /**
+       /**
      * Exibe detalhes de um serviço específico.
      */
     public Servico exibirServicoAtual(int servicoId) throws SQLException {
@@ -215,13 +190,6 @@ public class ServicoService {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
         return servico;
-    }
-
-    /**
-     * Conta serviços por status.
-     */
-    public int contarServicosPorStatus(String status) throws SQLException {
-        return servicoRepository.countByStatus(status);
     }
 
     /**

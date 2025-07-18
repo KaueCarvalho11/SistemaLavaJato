@@ -1,6 +1,7 @@
 package com.ufersa.sistemalavajato.repository;
 
 import com.ufersa.sistemalavajato.model.Cliente;
+import com.ufersa.sistemalavajato.util.PasswordUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ public class ClienteRepository extends BaseRepository<Cliente> {
      */
     @Override
     public void save(Cliente cliente) throws SQLException {
-        String sqlUsuario = "INSERT INTO usuarios (id, nome, email, senha, tipo_usuario) VALUES (?, ?, ?, ?, 'CLIENTE')";
+        String sqlUsuario = "INSERT INTO usuarios (id, nome, email, senha, senha_hash, tipo_usuario) VALUES (?, ?, ?, ?, ?, 'CLIENTE')";
         String sqlCliente = "INSERT INTO clientes (id_usuario, endereco, numero_telefone) VALUES (?, ?, ?)";
 
         executeTransaction(connection -> {
@@ -30,6 +31,7 @@ public class ClienteRepository extends BaseRepository<Cliente> {
                 stmtUsuario.setString(2, cliente.getNome());
                 stmtUsuario.setString(3, cliente.getEmail());
                 stmtUsuario.setString(4, cliente.getSenha());
+                stmtUsuario.setString(5, PasswordUtils.hashPassword(cliente.getSenha()));
                 stmtUsuario.executeUpdate();
             }
             // Depois, insere na tabela 'clientes', ligando pelo mesmo ID
@@ -44,7 +46,8 @@ public class ClienteRepository extends BaseRepository<Cliente> {
 
     /**
      * Atualiza os dados de um cliente existente.
-     * Também utiliza uma transação para atualizar as tabelas 'usuarios' e 'clientes' de forma atômica.
+     * Também utiliza uma transação para atualizar as tabelas 'usuarios' e
+     * 'clientes' de forma atômica.
      */
     @Override
     public void update(Cliente cliente) throws SQLException {
@@ -72,8 +75,10 @@ public class ClienteRepository extends BaseRepository<Cliente> {
 
     /**
      * Deleta um cliente do banco de dados.
-     * A operação assume que a tabela 'clientes' tem uma Foreign Key com "ON DELETE CASCADE",
-     * o que significa que ao deletar o usuário, o registro correspondente em 'clientes' é apagado automaticamente.
+     * A operação assume que a tabela 'clientes' tem uma Foreign Key com "ON DELETE
+     * CASCADE",
+     * o que significa que ao deletar o usuário, o registro correspondente em
+     * 'clientes' é apagado automaticamente.
      */
     @Override
     public void delete(String id) throws SQLException {
@@ -87,18 +92,18 @@ public class ClienteRepository extends BaseRepository<Cliente> {
     @Override
     public Cliente findById(String id) throws SQLException {
         String sql = "SELECT u.*, c.endereco, c.numero_telefone FROM usuarios u " +
-                     "JOIN clientes c ON u.id = c.id_usuario " +
-                     "WHERE u.id = ?";
+                "JOIN clientes c ON u.id = c.id_usuario " +
+                "WHERE u.id = ?";
         return findOne(sql, this::mapResultSetToCliente, id);
     }
-    
+
     /**
      * Busca um cliente pelo seu email, juntando dados das duas tabelas.
      */
     public Cliente findByEmail(String email) throws SQLException {
         String sql = "SELECT u.*, c.endereco, c.numero_telefone FROM usuarios u " +
-                     "JOIN clientes c ON u.id = c.id_usuario " +
-                     "WHERE u.email = ?";
+                "JOIN clientes c ON u.id = c.id_usuario " +
+                "WHERE u.email = ?";
         return findOne(sql, this::mapResultSetToCliente, email);
     }
 
@@ -108,23 +113,23 @@ public class ClienteRepository extends BaseRepository<Cliente> {
     @Override
     public List<Cliente> findAll() throws SQLException {
         String sql = "SELECT u.*, c.endereco, c.numero_telefone FROM usuarios u " +
-                     "JOIN clientes c ON u.id = c.id_usuario " +
-                     "ORDER BY u.nome";
+                "JOIN clientes c ON u.id = c.id_usuario " +
+                "ORDER BY u.nome";
         return findMany(sql, this::mapResultSetToCliente);
     }
 
     /**
-     * Método auxiliar privado para "traduzir" uma linha do resultado da consulta (ResultSet)
+     * Método auxiliar privado para "traduzir" uma linha do resultado da consulta
+     * (ResultSet)
      * em um objeto Cliente completo.
      */
     private Cliente mapResultSetToCliente(ResultSet rs) throws SQLException {
         return new Cliente(
-            rs.getString("id"),
-            rs.getString("nome"),
-            rs.getString("email"),
-            null, // Senha não é carregada para o objeto por segurança
-            rs.getString("endereco"),
-            rs.getString("numero_telefone")
-        );
+                rs.getString("id"),
+                rs.getString("nome"),
+                rs.getString("email"),
+                null, // Senha não é carregada para o objeto por segurança
+                rs.getString("endereco"),
+                rs.getString("numero_telefone"));
     }
 }
