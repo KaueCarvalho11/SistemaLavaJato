@@ -172,7 +172,7 @@ public class FuncionarioUI {
         System.out.println("Tipo: " + s.getTipo());
         System.out.println("Status: " + s.getStatus());
         System.out.printf("Preço: R$ %.2f\n", s.getPreco());
-        
+
         if (s.getVeiculo() != null && s.getVeiculo().getModelo() != null) {
             System.out.println(
                     "Veículo: " + s.getVeiculo().getModelo() + " (Chassi: " + s.getVeiculo().getNumChassi() + ")");
