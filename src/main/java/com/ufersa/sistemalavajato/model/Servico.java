@@ -95,7 +95,7 @@ public class Servico {
                 "\nStatus: " + status +
                 "\nForma de Pagamento: " + formaPagamento + 
                 "\nTipo: " + tipo + 
-                "\nVeiculo: " + veiculo.getModelo() +
+                "\nVeiculo: " + veiculo.getNumChassi() +
                 "\nFuncionário: " + funcionario.getNome();
     }
 }
