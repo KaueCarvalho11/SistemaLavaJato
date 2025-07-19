@@ -90,10 +90,11 @@ public class Program {
                         if (authService.login(loginEmail, loginSenha)) {
                             System.out.println("\nLogin realizado com sucesso!");
                             System.out.println("Bem-vindo(a), " + userSession.getCurrentUser().getNome() + "!");
-                            
+
                             if (userSession.isFuncionario()) {
-                                FuncionarioUI funcionarioUI = new FuncionarioUI((Funcionario) userSession.getCurrentUser());
-                                funcionarioUI.menu(); 
+                                FuncionarioUI funcionarioUI = new FuncionarioUI(
+                                        (Funcionario) userSession.getCurrentUser());
+                                funcionarioUI.menu();
                                 authService.logout();
                                 System.out.println("Você foi deslogado.");
 
