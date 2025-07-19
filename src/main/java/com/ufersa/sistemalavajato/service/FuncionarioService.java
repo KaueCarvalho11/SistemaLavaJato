@@ -22,12 +22,21 @@ public class FuncionarioService {
 
     //Cadastra um novo funcionário após validar os dados.
     public void cadastrarFuncionario(String id, String nome, String email, String senha) throws SQLException {
-        if (id == null || id.trim().isEmpty()) {
+        if (id == null || id.trim().isEmpty()) 
             throw new IllegalArgumentException("O ID do funcionário não pode ser vazio.");
-        }
-        if (nome == null || nome.trim().isEmpty()) {
+
+        if (!id.matches("^[1-9]\\d{0,9}$"))
+            throw new IllegalArgumentException("ID deve ser número inteiro positivo sem zeros à esquerda.");
+
+        if (nome == null || nome.trim().isEmpty()) 
             throw new IllegalArgumentException("O nome do funcionário não pode ser vazio.");
-        }
+
+        if (!nome.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$")) 
+            throw new IllegalArgumentException("O nome só pode conter letras e espaços.");
+        
+        if (nome.contains("  ")) 
+            throw new IllegalArgumentException("O nome não pode conter espaços duplos.");
+        
         if (email == null || !Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email)) {
             throw new IllegalArgumentException("Formato de e-mail inválido.");
         }

@@ -11,7 +11,8 @@ public class VeiculoRepository extends BaseRepository<Veiculo> {
 
     @Override
     public void save(Veiculo veiculo) throws SQLException {
-        String sql = "INSERT INTO veiculos (num_chassi, id_cliente, modelo, quilometragem, preco, cor, ano_fabricacao, status) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO veiculos (num_chassi, id_cliente, modelo, quilometragem, preco, cor, ano_fabricacao, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         executeUpdate(sql,
                 veiculo.getNumChassi(),
                 veiculo.getIdCliente(),
@@ -73,28 +74,26 @@ public class VeiculoRepository extends BaseRepository<Veiculo> {
                 rs.getInt("ano_fabricacao"),
                 rs.getString("status"));
     }
-    
-// Adicione este método dentro da classe VeiculoRepository.java
 
-/**
- * Conta quantos veículos um cliente específico possui.
- * @param clienteId O ID do cliente.
- * @return O número de veículos do cliente.
- * @throws SQLException
- */
-public int countByClienteId(String clienteId) throws SQLException {
-    String sql = "SELECT COUNT(*) FROM veiculos WHERE id_cliente = ?";
-    // Supondo que sua BaseRepository tenha um método 'count' que retorna um int
-    return count(sql, clienteId);
+    /**
+     * Conta quantos veículos um cliente específico possui.
+     * 
+     * @param clienteId O ID do cliente.
+     * @return O número de veículos do cliente.
+     * @throws SQLException
+     */
+    public int countByClienteId(String clienteId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM veiculos WHERE id_cliente = ?";
+        return count(sql, clienteId);
+    }
+
+    /*
+     * Método para buscar veículos associados a um cliente específico no banco de
+     * dados.
+     */
+    public List<Veiculo> findByClienteId(String clienteId) throws SQLException {
+        String sql = "SELECT * FROM veiculos WHERE id_cliente = ? ORDER BY modelo";
+        return findMany(sql, this::mapResultSetToVeiculo, clienteId);
+    }
+
 }
-
-// Adicione este método à sua classe VeiculoRepository
-
-public List<Veiculo> findByClienteId(String clienteId) throws SQLException {
-    String sql = "SELECT * FROM veiculos WHERE id_cliente = ? ORDER BY modelo";
-    return findMany(sql, this::mapResultSetToVeiculo, clienteId);
-}
-
-}
-
-

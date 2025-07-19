@@ -1,4 +1,5 @@
 package com.ufersa.sistemalavajato.model;
+import java.text.DecimalFormat;
 
 public class Servico {
 
@@ -8,15 +9,17 @@ public class Servico {
     private String status;
     private String formaPagamento;
     private String tipo;
-
     private Veiculo veiculo;
     private Funcionario funcionario;
+    DecimalFormat df = new DecimalFormat("0.00");
 
-    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario) {
+    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario, String formaPagamento, String descricao) {
         this.idServico = idServico;
         this.tipo = tipo;
         this.veiculo = veiculo;
         this.funcionario = funcionario;
+        this.formaPagamento = formaPagamento;
+        this.descricao = descricao;
     }
 
     // --- Getters e Setters ---
@@ -86,9 +89,13 @@ public class Servico {
 
     @Override
     public String toString() {
-        return "Servico [idServico=" + idServico + ", descricao=" + descricao + ", preco=" + preco + ", status="
-                + status + ", formaPagamento=" + formaPagamento + ", tipo=" + tipo + ", veiculo=" + veiculo
-                + ", funcionario=" + funcionario + "]";
+        return "Id: " + idServico +
+                "\nDescrição: " + descricao +
+                "\nPreço: R$" + df.format(preco) +
+                "\nStatus: " + status +
+                "\nForma de Pagamento: " + formaPagamento + 
+                "\nTipo: " + tipo + 
+                "\nVeiculo: " + veiculo.getNumChassi() +
+                "\nFuncionário: " + funcionario.getNome();
     }
-
 }

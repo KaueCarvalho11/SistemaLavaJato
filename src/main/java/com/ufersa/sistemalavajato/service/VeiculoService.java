@@ -34,8 +34,7 @@ public class VeiculoService {
         // verifica existência usando findByNumChassi
         if (repository.findByNumChassi(chassi) != null) {
             throw new IllegalArgumentException(
-                "Já existe veículo cadastrado com o chassi " + chassi
-            );
+                    "Já existe veículo cadastrado com o chassi " + chassi);
         }
         repository.save(veiculo);
     }
@@ -50,8 +49,7 @@ public class VeiculoService {
         Veiculo v = repository.findByNumChassi(numChassi);
         if (v == null) {
             throw new IllegalArgumentException(
-                "Veículo com chassi " + numChassi + " não encontrado."
-            );
+                    "Veículo com chassi " + numChassi + " não encontrado.");
         }
         return v;
     }
@@ -59,13 +57,14 @@ public class VeiculoService {
     /**
      * Atualiza os dados de um veículo existente.
      */
-     public void atualizarVeiculo(int numChassi, String idCliente, String modelo, double quilometragem, double preco, String cor, int anoFabricacao, String status) throws SQLException {
+    public void atualizarVeiculo(int numChassi, String idCliente, String modelo, double quilometragem, double preco,
+            String cor, int anoFabricacao, String status) throws SQLException {
         // Busca o veículo existente
         Veiculo existente = repository.findById(String.valueOf(numChassi));
         if (existente == null) {
             throw new IllegalArgumentException("Veículo com chassi " + numChassi + " não encontrado.");
         }
-        
+
         if (idCliente != null && !idCliente.trim().isEmpty()) {
             existente.setIdCliente(idCliente);
         }
@@ -97,11 +96,10 @@ public class VeiculoService {
         Veiculo v = repository.findByNumChassi(numChassi);
         if (v == null) {
             throw new IllegalArgumentException(
-                "Veículo com chassi " + numChassi + " não encontrado."
-            );
+                    "Veículo com chassi " + numChassi + " não encontrado.");
         }
-        
-        repository.delete(String.valueOf(numChassi)); 
+
+        repository.delete(String.valueOf(numChassi));
     }
 
     /**
@@ -111,12 +109,14 @@ public class VeiculoService {
         return repository.findAll();
     }
 
-    // Adicione este método à sua classe VeiculoService
-
-public List<Veiculo> listarVeiculosPorCliente(String clienteId) throws SQLException {
-    if (clienteId == null || clienteId.trim().isEmpty()) {
-        throw new IllegalArgumentException("O ID do cliente não pode ser vazio.");
+    /**
+     * Método do serviço (Service) para listar veículos associados a um cliente
+     * específico.
+     */
+    public List<Veiculo> listarVeiculosPorCliente(String clienteId) throws SQLException {
+        if (clienteId == null || clienteId.trim().isEmpty()) {
+            throw new IllegalArgumentException("O ID do cliente não pode ser vazio.");
+        }
+        return repository.findByClienteId(clienteId);
     }
-    return repository.findByClienteId(clienteId);
-}
 }
