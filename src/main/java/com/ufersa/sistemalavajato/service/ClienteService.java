@@ -4,7 +4,7 @@ import com.ufersa.sistemalavajato.model.Cliente;
 import com.ufersa.sistemalavajato.model.Servico;
 import com.ufersa.sistemalavajato.repository.ClienteRepository;
 import com.ufersa.sistemalavajato.repository.ServicoRepository;
-import com.ufersa.sistemalavajato.repository.VeiculoRepository; // Import comentado até a classe ser criada.
+import com.ufersa.sistemalavajato.repository.VeiculoRepository; 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -20,11 +20,12 @@ public class ClienteService {
     // Dependências necessárias para as operações de cliente.
     private final ClienteRepository repository;
     private final ServicoRepository servicoRepository;
-    private final VeiculoRepository veiculoRepository; // Comentado até a classe ser criada.
+    private final VeiculoRepository veiculoRepository; 
 
     public ClienteService() {
         this.repository = new ClienteRepository();
         this.servicoRepository = new ServicoRepository();
+        this.veiculoRepository = new VeiculoRepository();
         this.veiculoRepository = new VeiculoRepository();
     }
 
@@ -109,8 +110,6 @@ public class ClienteService {
         // Primeiro, busca o cliente para garantir que ele existe
         Cliente cliente = buscarClientePorId(id);
 
-        // Validações dos novos dados...
-        // ...
 
         // Atualiza o objeto com os novos dados
         cliente.setNome(novoNome);
@@ -121,14 +120,11 @@ public class ClienteService {
             cliente.setSenha(novaSenha);
         }
 
-        // Delega a atualização para o repositório
         repository.update(cliente);
     }
 
     /**
      * Remove um cliente do sistema.
-     * A verificação de veículos associados está temporariamente desabilitada até a
-     * implementação da entidade Veiculo.
      */
     public void removerCliente(String id) throws SQLException, IllegalArgumentException, IllegalStateException {
         // Garante que o cliente existe
@@ -143,20 +139,16 @@ public class ClienteService {
                     "Não é possível remover cliente que possui " + quantidadeVeiculos + " veículo(s) cadastrado(s).");
         }
 
-        // Delega a exclusão ao repositório
         repository.delete(id);
     }
 
     /**
      * Retorna uma lista de todos os serviços solicitados por um cliente específico.
-     * Orquestra a busca, primeiro validando a existência do cliente e depois
-     * consultando o repositório de serviços.
      */
     public List<Servico> verServicosSolicitados(String clienteId) throws SQLException {
-        // 1. Valida se o cliente existe
+       
         buscarClientePorId(clienteId);
 
-        // 2. Chama o método do repositório (que agora existe) e retorna o resultado.
         return servicoRepository.findByClienteId(clienteId);
     }
 }

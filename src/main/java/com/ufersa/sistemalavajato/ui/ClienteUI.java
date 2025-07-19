@@ -24,7 +24,7 @@ public class ClienteUI {
     private final VeiculoService veiculoService;
     private final ServicoService servicoService;
     private final ClienteService clienteService;
-    private final FuncionarioService funcionarioService; // Para listar funcionários disponíveis
+    private final FuncionarioService funcionarioService; 
     private final Scanner sc;
 
     public ClienteUI(Cliente clienteLogado) {
@@ -51,7 +51,7 @@ public class ClienteUI {
 
             try {
                 op = sc.nextInt();
-                sc.nextLine(); // Limpa o buffer
+                sc.nextLine(); 
 
                 switch (op) {
                     case 1:
@@ -72,7 +72,7 @@ public class ClienteUI {
                 }
             } catch (InputMismatchException e) {
                 System.err.println("Entrada inválida. Por favor, digite um número.");
-                sc.nextLine(); // Limpa o buffer
+                sc.nextLine(); 
             } catch (SQLException | IllegalArgumentException | IllegalStateException e) {
                 System.err.println("ERRO: " + e.getMessage());
             }
@@ -114,7 +114,9 @@ public class ClienteUI {
         }
     }
 
-    // REUTILIZA veiculoService.cadastrarVeiculo()
+    /**
+     * Método para cadastrar um novo veículo associado ao cliente logado.
+     **/
     private void adicionarVeiculo() throws SQLException {
         System.out.println("\n--- CADASTRAR NOVO VEÍCULO ---");
         System.out.print("Número do Chassi: ");
@@ -133,8 +135,9 @@ public class ClienteUI {
         System.out.println("Veículo cadastrado com sucesso!");
     }
 
-    // REUTILIZA veiculoService.removerVeiculo() e
-    // servicoService.buscarServicosPorVeiculo()
+    /**
+     * Método para remover um veículo do cliente logado.
+     **/
     private void removerVeiculo() throws SQLException {
         System.out.println("\n--- REMOVER VEÍCULO ---");
         listarMeusVeiculos();
@@ -142,7 +145,7 @@ public class ClienteUI {
         int chassi = sc.nextInt();
         sc.nextLine();
 
-        // Regra de negócio: Reutiliza o método existente para verificar serviços ativos
+       
         List<Servico> servicosDoVeiculo = servicoService.buscarServicosPorVeiculo(chassi);
         boolean temServicoAtivo = servicosDoVeiculo.stream()
                 .anyMatch(s -> "EM_ANDAMENTO".equals(s.getStatus()) || "PENDENTE".equals(s.getStatus()));
@@ -156,7 +159,9 @@ public class ClienteUI {
         System.out.println("Veículo removido com sucesso!");
     }
 
-    // USA O NOVO MÉTODO (necessário) veiculoService.listarVeiculosPorCliente()
+    /**
+     * Lista todos os veículos associados ao cliente logado.
+     **/
     private void listarMeusVeiculos() throws SQLException {
         System.out.println("\n--- MEUS VEÍCULOS ---");
         List<Veiculo> veiculos = veiculoService.listarVeiculosPorCliente(clienteLogado.getId());
@@ -169,7 +174,9 @@ public class ClienteUI {
         }
     }
 
-    // REUTILIZA servicoService.cadastrarServico() e outros
+    /**
+     * Permite ao cliente solicitar um novo serviço para um de seus veículos.
+     **/
     private void solicitarServico() throws SQLException {
         System.out.println("\n--- SOLICITAR SERVIÇO ---");
         listarMeusVeiculos();
@@ -259,7 +266,9 @@ public class ClienteUI {
                 "Serviço solicitado com sucesso e atribuído ao funcionário: " + funcionarioAtribuido.getNome() + "!");
     }
 
-    // USA O NOVO MÉTODO (necessário) clienteService.verServicosSolicitados()
+    /**
+     * Exibe todos os serviços solicitados pelo cliente logado.
+     **/
     private void visualizarMeusServicos() throws SQLException {
         System.out.println("\n--- MEUS SERVIÇOS SOLICITADOS ---");
         List<Servico> servicos = clienteService.verServicosSolicitados(clienteLogado.getId());

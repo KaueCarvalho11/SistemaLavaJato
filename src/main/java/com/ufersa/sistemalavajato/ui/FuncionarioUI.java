@@ -95,11 +95,14 @@ public class FuncionarioUI {
         } 
         catch (InputMismatchException e) {
             System.err.println("ERRO: Por favor, digite um número de ID válido.");
-            sc.nextLine(); // Limpa o buffer em caso de erro de digitação
+            sc.nextLine(); 
         }
     }
 
     private void atualizarStatusServico() throws SQLException {
+        System.out.println("\n--- ATUALIZAR STATUS DE SERVIÇO ---");
+        
+        visualizarServicosEmAndamento();
         System.out.print("Digite o ID do serviço para atualizar: ");
         int servicoId = sc.nextInt();
         sc.nextLine();
@@ -140,6 +143,7 @@ public class FuncionarioUI {
     }
 
     private void definirPreco() throws SQLException {
+        visualizarServicosEmAndamento();
         try {
             System.out.print("Digite o ID do serviço para DEFINIR O PREÇO: ");
             int servicoId = sc.nextInt();
@@ -153,9 +157,8 @@ public class FuncionarioUI {
             System.out.println("Preço do serviço atualizado com sucesso!");
         } catch (InputMismatchException e) {
             System.err.println("ERRO DE ENTRADA: Por favor, digite um número válido para o ID ou preço.");
-            sc.nextLine(); // Garante a limpeza do buffer para a próxima tentativa.
+            sc.nextLine();
         } catch (SQLException e) {
-            // CORREÇÃO: Mensagem de erro ajustada para a operação correta.
             System.err.println("ERRO DE BANCO DE DADOS: Não foi possível atualizar o preço. " + e.getMessage());
         } catch (IllegalArgumentException | IllegalStateException e) {
             System.err.println("ERRO: " + e.getMessage());
@@ -168,9 +171,7 @@ public class FuncionarioUI {
         if (servicos.isEmpty())
             System.out.println("Nenhum serviço em andamento no momento.");
         else {
-            for (Servico s : servicos) {
-                System.out.println(s);
-            }
+            servicos.forEach(this::printServicoFormatado);
         }
     }
 
@@ -199,6 +200,5 @@ public class FuncionarioUI {
         } else {
             System.out.println("Veículo: (não especificado)");
         }
-        System.out.println("----------------------------------------");
     }
 }
