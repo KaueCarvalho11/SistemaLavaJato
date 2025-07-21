@@ -56,17 +56,6 @@ public class FuncionarioService {
         repository.save(novoFuncionario);
     }
 
-    //Realiza o login de um funcionário.
-    public Funcionario realizarLogin(String email, String senha) throws SQLException {
-        Funcionario funcionario = repository.EncontrarPorEmail(email);
-
-        if (funcionario != null && funcionario.getSenha().equals(senha)) {
-            return funcionario;
-        }
-
-        return null;
-    }
-
     //Lista todos os funcionários cadastrados.
     public List<Funcionario> listarTodosFuncionarios() throws SQLException {
         return repository.findAll();

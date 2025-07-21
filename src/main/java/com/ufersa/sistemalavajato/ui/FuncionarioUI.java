@@ -185,7 +185,9 @@ public class FuncionarioUI {
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");
         } else {
-            concluidos.forEach(this::printServicoFormatado);
+            for (Servico s: concluidos){
+            System.out.println(s);
+            }
         }
     }
     private void printServicoFormatado(Servico s) {
