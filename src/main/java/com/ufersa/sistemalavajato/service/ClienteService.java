@@ -26,7 +26,6 @@ public class ClienteService {
         this.repository = new ClienteRepository();
         this.servicoRepository = new ServicoRepository();
         this.veiculoRepository = new VeiculoRepository();
-        this.veiculoRepository = new VeiculoRepository();
     }
 
     /**

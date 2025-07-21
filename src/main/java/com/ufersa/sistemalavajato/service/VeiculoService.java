@@ -19,25 +19,63 @@ public class VeiculoService {
     /**
      * Cadastra um novo veículo no sistema.
      */
-    public void cadastrarVeiculo(Veiculo veiculo) throws SQLException {
-        if (veiculo == null) {
-            throw new IllegalArgumentException("Veículo não pode ser nulo.");
-        }
-        int chassi = veiculo.getNumChassi();
-        if (chassi <= 0) {
-            throw new IllegalArgumentException("Número de chassi inválido.");
-        }
-        String cliente = veiculo.getIdCliente();
-        if (cliente == null || cliente.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do cliente é obrigatório.");
-        }
-        // verifica existência usando findByNumChassi
-        if (repository.findByNumChassi(chassi) != null) {
-            throw new IllegalArgumentException(
-                    "Já existe veículo cadastrado com o chassi " + chassi);
-        }
-        repository.save(veiculo);
-    }
+    public void cadastrarVeiculo(String idCliente, String modelo, int numChassi, double quilometragem, double preco, String cor, int anoFabricacao, String status) throws SQLException {
+    // Validação do ID do cliente
+    if (idCliente == null || idCliente.trim().isEmpty()) 
+        throw new IllegalArgumentException("ID do cliente é obrigatório.");
+    
+    if (!idCliente.matches("^[1-9]\\d{0,9}$")) 
+        throw new IllegalArgumentException("ID do cliente deve ser número inteiro positivo sem zeros à esquerda.");
+    
+    // Validação do número do chassi
+    if (numChassi <= 0) 
+        throw new IllegalArgumentException("Número de chassi deve ser um inteiro positivo.");
+    
+    if (repository.findByNumChassi(numChassi) != null) 
+        throw new IllegalArgumentException("Já existe veículo cadastrado com o chassi " + numChassi);
+
+    // Validação do modelo
+    if (modelo == null || modelo.trim().isEmpty()) 
+        throw new IllegalArgumentException("Modelo do veículo não pode ser vazio.");
+    
+    if (!modelo.matches("^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ]+$")) 
+        throw new IllegalArgumentException("Modelo só pode conter letras, números e espaços.");
+    
+    if (modelo.contains("  ")) 
+        throw new IllegalArgumentException("Modelo não pode conter espaços duplos.");
+
+    // Validação da cor
+    if (cor == null || cor.trim().isEmpty()) 
+        throw new IllegalArgumentException("Cor do veículo não pode ser vazia.");
+    
+    if (!cor.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$")) 
+        throw new IllegalArgumentException("Cor só pode conter letras e espaços.");
+    
+    if (cor.contains("  ")) 
+        throw new IllegalArgumentException("Cor não pode conter espaços duplos.");
+    
+    // Validação do ano de fabricação
+    int anoAtual = java.time.Year.now().getValue();
+    if (anoFabricacao < 1900 || anoFabricacao > anoAtual) 
+        throw new IllegalArgumentException("Ano de fabricação inválido.");
+
+    // Validação da quilometragem e preço
+    if (quilometragem < 0) 
+        throw new IllegalArgumentException("Quilometragem não pode ser negativa.");
+    
+    if (preco < 0) 
+        throw new IllegalArgumentException("Preço não pode ser negativo.");
+    
+
+    // Validação do status
+    if (status == null || status.trim().isEmpty()) 
+        throw new IllegalArgumentException("Status do veículo não pode ser vazio.");
+    
+
+    // Criação do objeto Veiculo após validações
+    Veiculo veiculo = new Veiculo(idCliente, modelo, numChassi, quilometragem, preco, cor, anoFabricacao, status);
+    repository.save(veiculo);
+}
 
     /**
      * Busca um veículo pelo número de chassi.
