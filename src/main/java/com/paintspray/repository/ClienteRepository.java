@@ -1,7 +1,8 @@
 package com.paintspray.repository;
 
 import com.paintspray.model.Cliente;
-import com.paintspray.util.PasswordUtils;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,75 +16,56 @@ import java.util.List;
 public class ClienteRepository extends BaseRepository<Cliente> {
 
     /**
-     * Salva um novo cliente no banco de dados.
-     * Executa inserções nas tabelas 'usuarios' e 'clientes' dentro de uma transação
-     * para garantir a consistência dos dados (ou tudo funciona, ou nada é salvo).
+     * Salva um novo cliente diretamente na tabela 'clientes'.
      */
     @Override
     public void save(Cliente cliente) throws SQLException {
-        String sqlUsuario = "INSERT INTO usuarios (id, nome, email, senha, senha_hash, tipo_usuario) VALUES (?, ?, ?, ?, ?, 'CLIENTE')";
-        String sqlCliente = "INSERT INTO clientes (id_usuario, endereco, numero_telefone) VALUES (?, ?, ?)";
+       String sqlCliente = "INSERT INTO clientes (id_usuario, endereco, numero_telefone) VALUES (?, ?, ?)";
 
-        executeTransaction(connection -> {
-            // Primeiro, insere na tabela 'usuarios'
-            try (PreparedStatement stmtUsuario = connection.prepareStatement(sqlUsuario)) {
-                stmtUsuario.setString(1, cliente.getId());
-                stmtUsuario.setString(2, cliente.getNome());
-                stmtUsuario.setString(3, cliente.getEmail());
-                stmtUsuario.setString(4, cliente.getSenha());
-                stmtUsuario.setString(5, PasswordUtils.hashPassword(cliente.getSenha()));
-                stmtUsuario.executeUpdate();
-            }
-            // Depois, insere na tabela 'clientes', ligando pelo mesmo ID
-            try (PreparedStatement stmtCliente = connection.prepareStatement(sqlCliente)) {
-                stmtCliente.setString(1, cliente.getId());
-                stmtCliente.setString(2, cliente.getEndereco());
-                stmtCliente.setString(3, cliente.getNumeroTelefone());
-                stmtCliente.executeUpdate();
-            }
-        });
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sqlCliente)) {
+
+            stmt.setString(1, cliente.getId());
+            stmt.setString(2, cliente.getNome()); // Adicionado: Nome agora é salvo aqui
+            stmt.setString(3, cliente.getEndereco());
+            stmt.setString(4, cliente.getNumeroTelefone());
+            
+            stmt.executeUpdate();
+        }
     }
 
     /**
      * Atualiza os dados de um cliente existente.
-     * Também utiliza uma transação para atualizar as tabelas 'usuarios' e
-     * 'clientes' de forma atômica.
      */
     @Override
     public void update(Cliente cliente) throws SQLException {
-        String sqlUsuario = "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?";
-        String sqlCliente = "UPDATE clientes SET endereco = ?, numero_telefone = ? WHERE id_usuario = ?";
+        String sqlCliente = "UPDATE clientes SET nome = ?, endereco = ?, numero_telefone = ? WHERE id = ?";
 
-        executeTransaction(connection -> {
-            // Atualiza os dados na tabela 'usuarios'
-            try (PreparedStatement stmtUsuario = connection.prepareStatement(sqlUsuario)) {
-                stmtUsuario.setString(1, cliente.getNome());
-                stmtUsuario.setString(2, cliente.getEmail());
-                stmtUsuario.setString(3, cliente.getSenha());
-                stmtUsuario.setString(4, cliente.getId());
-                stmtUsuario.executeUpdate();
-            }
-            // Atualiza os dados na tabela 'clientes'
-            try (PreparedStatement stmtCliente = connection.prepareStatement(sqlCliente)) {
-                stmtCliente.setString(1, cliente.getEndereco());
-                stmtCliente.setString(2, cliente.getNumeroTelefone());
-                stmtCliente.setString(3, cliente.getId());
-                stmtCliente.executeUpdate();
-            }
-        });
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sqlCliente)) {
+
+            stmt.setString(1, cliente.getNome());
+            stmt.setString(2, cliente.getEndereco());
+            stmt.setString(3, cliente.getNumeroTelefone());
+            stmt.setString(4, cliente.getId());
+
+            stmt.executeUpdate();
+        }
     }
 
     /**
      * Deleta um cliente do banco de dados.
-     * A operação assume que a tabela 'clientes' tem uma Foreign Key com "ON DELETE
-     * CASCADE",
-     * o que significa que ao deletar o usuário, o registro correspondente em
-     * 'clientes' é apagado automaticamente.
      */
     @Override
     public void delete(String id) throws SQLException {
-        String sql = "DELETE FROM usuarios WHERE id = ?";
-        executeUpdate(sql, id);
+        String sqlCliente = "DELETE FROM clientes WHERE id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sqlCliente)) {
+            
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        }
     }
 
     /**
@@ -91,20 +73,8 @@ public class ClienteRepository extends BaseRepository<Cliente> {
      */
     @Override
     public Cliente findById(String id) throws SQLException {
-        String sql = "SELECT u.*, c.endereco, c.numero_telefone FROM usuarios u " +
-                "JOIN clientes c ON u.id = c.id_usuario " +
-                "WHERE u.id = ?";
+        String sql = "SELECT * FROM clientes WHERE id = ?";
         return findOne(sql, this::mapResultSetToCliente, id);
-    }
-
-    /**
-     * Busca um cliente pelo seu email, juntando dados das duas tabelas.
-     */
-    public Cliente findByEmail(String email) throws SQLException {
-        String sql = "SELECT u.*, c.endereco, c.numero_telefone FROM usuarios u " +
-                "JOIN clientes c ON u.id = c.id_usuario " +
-                "WHERE u.email = ?";
-        return findOne(sql, this::mapResultSetToCliente, email);
     }
 
     /**
@@ -112,9 +82,7 @@ public class ClienteRepository extends BaseRepository<Cliente> {
      */
     @Override
     public List<Cliente> findAll() throws SQLException {
-        String sql = "SELECT u.*, c.endereco, c.numero_telefone FROM usuarios u " +
-                "JOIN clientes c ON u.id = c.id_usuario " +
-                "ORDER BY u.nome";
+        String sql = "SELECT * FROM clientes ORDER BY nome";
         return findMany(sql, this::mapResultSetToCliente);
     }
 
@@ -123,13 +91,13 @@ public class ClienteRepository extends BaseRepository<Cliente> {
      * (ResultSet)
      * em um objeto Cliente completo.
      */
+    
     private Cliente mapResultSetToCliente(ResultSet rs) throws SQLException {
         return new Cliente(
-                rs.getString("id"),
-                rs.getString("nome"),
-                rs.getString("email"),
-                null, // Senha não é carregada para o objeto por segurança
-                rs.getString("endereco"),
-                rs.getString("numero_telefone"));
+            rs.getString("id"),
+            rs.getString("nome"),
+            rs.getString("endereco"),
+            rs.getString("numero_telefone")
+        );
     }
 }

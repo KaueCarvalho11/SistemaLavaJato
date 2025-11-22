@@ -1,39 +1,45 @@
 package com.paintspray.model;
 
-import com.paintspray.enums.TipoUsuario;
-
-public class Cliente extends Usuario {
+public class Cliente {
 
     // Atributos específicos do Cliente
+    private String id;
+    private String nome;
     private String endereco;
     private String numeroTelefone;
 
     /**
      * Construtor da classe Cliente.
-     * Inicializa tanto os atributos de Usuário (usando super()) quanto os de
-     * Cliente.
      * 
-     * @param id             ID do usuário (herdado).
-     * @param nome           Nome do usuário (herdado).
-     * @param email          Email do usuário (herdado).
-     * @param senha          Senha do usuário (herdado).
+     * @param nome           Nome do usuário.
      * @param endereco       Endereço específico do cliente.
      * @param numeroTelefone Telefone específico do cliente.
      */
-    public Cliente(String id, String nome, String email, String senha, String endereco, String numeroTelefone) {
-        // 'super()' chama o construtor da classe pai (Usuario) para inicializar os
-        // campos herdados.
-        super(id, nome, email, senha);
+
+    public Cliente(String id, String nome, String endereco, String numeroTelefone) {
+        this.id = id;
+        this.nome = nome;
         this.endereco = endereco;
         this.numeroTelefone = numeroTelefone;
     }
 
-    @Override
-    public TipoUsuario getTipoUsuario() {
-        return TipoUsuario.CLIENTE;
+    // Getters e Setters para os atributos específicos de Cliente.
+
+    public String getId() {
+        return id;
     }
 
-    // Getters e Setters para os atributos específicos de Cliente.
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) { 
+        this.nome = nome;
+    }
 
     public String getEndereco() {
         return endereco;
@@ -51,15 +57,8 @@ public class Cliente extends Usuario {
         this.numeroTelefone = numeroTelefone;
     }
 
-    /**
-     * Sobrescreve o método toString para fornecer uma representação textual
-     * completa do objeto Cliente.
-     * Útil para logs e impressões rápidas.
-     */
     @Override
     public String toString() {
-        return super.toString() + 
-                "\nEndereço: " + endereco + 
-                "\nTelefone: " + numeroTelefone;
+        return "Cliente: " + id + ", " + nome + ", " + endereco + ", " + numeroTelefone;
     }
 }

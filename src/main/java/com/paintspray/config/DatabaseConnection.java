@@ -46,10 +46,12 @@ public class DatabaseConnection {
             
             // REQUISITO KANBAN: Tabela clientes independente (sem FK para usuarios)
             stmt.execute("CREATE TABLE IF NOT EXISTS clientes (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "nome TEXT NOT NULL, " +
-                    "telefone TEXT, " +
-                    "endereco TEXT)");
+                "id TEXT PRIMARY KEY, " +           
+                "nome TEXT NOT NULL, " +
+                "endereco TEXT, " +
+                "numero_telefone TEXT, " +          
+                "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP)");
 
             // Ajuste necessário para veículos (Chassi como TEXTO)
             stmt.execute("CREATE TABLE IF NOT EXISTS veiculos (" +
