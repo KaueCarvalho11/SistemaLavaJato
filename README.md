@@ -1,60 +1,106 @@
-# Sistema Lava Jato
+# Paint-Spray - Sistema de Gestão de Oficina
 
-Este é um projeto Java para gerenciamento de um sistema de lava jato.
+Sistema desktop desenvolvido em JavaFX para gestão de oficina de pintura de motos.
 
-## Estrutura do Projeto
+##  Características
 
-O projeto segue as convenções padrão Maven/Java:
+- **Interface Moderna**: Utiliza AtlantaFX para um visual clean e profissional
+- **Dashboard Kanban**: Visualização intuitiva do status dos serviços
+- **Gestão Completa**: Clientes, Veículos e Ordens de Serviço
+- **Banco de Dados**: SQLite embarcado (sem necessidade de servidor)
 
-```
-SistemaLavaJato/
-├── pom.xml                          # Configuração Maven
-├── src/
-│   ├── main/
-│   │   └── java/
-│   │       └── com/
-│   │           └── ufersa/
-│   │               └── sistemalavajato/
-│   │                   ├── Program.java           # Classe principal
-│   │                   ├── model/                 # Modelos de dados
-│   │                   │   ├── Usuario.java       # Classe abstrata base
-│   │                   │   ├── Funcionario.java   # Herda de Usuario
-│   │                   │   ├── Cliente.java       # Cliente do lava jato
-│   │                   │   ├── Veiculo.java       # Veículo a ser lavado
-│   │                   │   └── Servico.java       # Serviço prestado
-│   │                   ├── repository/            # Camada de dados
-│   │                   ├── service/               # Lógica de negócio
-│   │                   └── ui/                    # Interface do usuário
-│   └── test/
-│       └── java/                                  # Testes unitários
-└── .vscode/
-    └── settings.json                              # Configurações do VS Code
+## Requisitos
+
+- Java 21 ou superior
+- Maven 3.6+
+
+## 🚀 Como Executar
+
+### 1. Pré-requisitos
+
+- Java 21 ou superior
+- Maven 3.6+
+- SQLite3 (para popular banco manualmente, opcional)
+
+### 2. Executar a aplicação
+
+```bash
+mvn javafx:run
 ```
 
-## Packages
+### 3. Credenciais de Acesso
+Como o projeto ainda está em teste, temos apenas credenciais de teste. Clique em Primeiro Acesso, o usuário padrão vai ser criado.
 
-- `com.paintspray` - Package raiz
-- `com.paintspray.model` - Classes de modelo (entidades)
-- `com.paintspray.repository` - Camada de persistência de dados
-- `com.paintspray.service` - Lógica de negócio
-- `com.paintspray.ui` - Interface do usuário
+**Usuário padrão:**
+- Email: `admin`
+- Senha: `admin`
 
-## Principais Correções Realizadas
+## 📦 Gerar JAR Executável
 
-1. **Estrutura de diretórios**: Migração de `src/main/sistemalavajato/` para `src/main/java/com/ufersa/sistemalavajato/`
-2. **Packages**: Correção de todas as declarações de package para `com.paintspray.*`
-3. **Configuração Maven**: Adição do arquivo `pom.xml` para gerenciamento de dependências
-4. **Configuração VS Code**: Arquivo `.vscode/settings.json` para reconhecimento correto dos source folders
-5. **Herança**: Implementação correta da herança entre `Funcionario` e `Usuario`
+```bash
+mvn clean package
+java -jar target/paintspray-1.0-SNAPSHOT.jar
+```
 
-## Como Executar
+## 🏗️ Estrutura do Projeto
 
-1. Certifique-se de ter o Java 11+ instalado
-2. Execute: `mvn compile` para compilar o projeto
-3. Execute: `mvn exec:java -Dexec.mainClass="com.paintspray.Program"` para executar
+```
+src/
+├── main/
+│   ├── java/
+│   │   └── com/paintspray/
+│   │       ├── MainApplication.java         # Classe principal
+│   │       ├── controller/                  # Controllers JavaFX
+│   │       │   ├── LoginController.java
+│   │       │   ├── MainController.java
+│   │       │   └── SessionManager.java
+│   │       ├── model/                       # Entidades
+│   │       │   ├── Cliente.java
+│   │       │   ├── Usuario.java
+│   │       │   ├── Veiculo.java
+│   │       │   └── Servico.java
+│   │       ├── enums/                       # Enumerações
+│   │       │   ├── StatusServico.java
+│   │       │   ├── TipoServico.java
+│   │       │   └── FormaPagamento.java
+│   │       ├── repository/                  # Acesso ao banco
+│   │       ├── service/                     # Lógica de negócio
+│   │       ├── config/                      # Configurações
+│   │       └── util/                        # Utilitários
+│   └── resources/
+│       └── com/paintspray/
+│           ├── fxml/                        # Arquivos FXML
+│           │   ├── login.fxml
+│           │   └── main.fxml
+│           ├── css/                         # Estilos
+│           │   └── styles.css
+│           └── images/                      # Imagens e ícones
+```
 
-## Desenvolvimento
+## Banco de Dados
 
-- Use VS Code com a extensão Java Extension Pack
-- O projeto agora está configurado corretamente com Maven
-- As declarações de package estão corretas e seguem as convenções Java
+O sistema utiliza SQLite com as seguintes tabelas:
+
+- **usuarios**: Dados do proprietário da oficina
+- **clientes**: Cadastro de clientes
+- **veiculos**: Veículos dos clientes (motos)
+- **servicos**: Ordens de serviço (pintura)
+
+## Status de Serviço (Pipeline)
+
+1. **Pendente** → Serviço cadastrado, aguardando início
+2. **Em Andamento** → Serviço sendo executado
+3. **Aguardando Pagamento** → Serviço concluído, pendente pagamento
+4. **Finalizado** → Serviço pago e concluído
+
+## Tecnologias
+
+- **JavaFX 21**: Framework de interface gráfica
+- **SQLite**: Banco de dados embarcado
+
+
+Desenvolvido para a disciplina de Engenharia de Software - UFERSA 2025.2
+
+## 📝 Licença
+
+Este projeto é parte de um trabalho acadêmico.

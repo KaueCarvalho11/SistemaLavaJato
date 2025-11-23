@@ -4,7 +4,7 @@ import com.paintspray.model.Cliente;
 import com.paintspray.model.Servico;
 import com.paintspray.repository.ClienteRepository;
 import com.paintspray.repository.ServicoRepository;
-import com.paintspray.repository.VeiculoRepository; 
+import com.paintspray.repository.VeiculoRepository;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ClienteService {
     // Dependências necessárias para as operações de cliente.
     private final ClienteRepository repository;
     private final ServicoRepository servicoRepository;
-    private final VeiculoRepository veiculoRepository; 
+    private final VeiculoRepository veiculoRepository;
 
     public ClienteService() {
         this.repository = new ClienteRepository();
@@ -43,26 +43,28 @@ public class ClienteService {
         if (nome == null || nome.trim().isEmpty())
             throw new IllegalArgumentException("O nome não pode ser vazio.");
 
-        if (!nome.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$")) 
+        if (!nome.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$"))
             throw new IllegalArgumentException("O nome só pode conter letras e espaços.");
 
-        if (nome.contains("  ")) 
+        if (nome.contains("  "))
             throw new IllegalArgumentException("O nome não pode conter espaços duplos.");
-        
+
         if (endereco == null || endereco.trim().isEmpty())
             throw new IllegalArgumentException("O endereço não pode ser vazio.");
 
         if (!endereco.matches("^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.-]+$"))
-            throw new IllegalArgumentException("O endereço só pode conter letras, números, espaços, vírgulas, pontos e hífens.");
+            throw new IllegalArgumentException(
+                    "O endereço só pode conter letras, números, espaços, vírgulas, pontos e hífens.");
 
-        if (endereco.contains("  ")) 
+        if (endereco.contains("  "))
             throw new IllegalArgumentException("O endereço não pode conter espaços duplos.");
-        
-        if (telefone == null || telefone.trim().isEmpty()) 
+
+        if (telefone == null || telefone.trim().isEmpty())
             throw new IllegalArgumentException("O telefone não pode ser vazio.");
-        
-        if (!telefone.matches("^\\+?\\d{8,15}$")) 
-            throw new IllegalArgumentException( "Telefone inválido. Deve conter apenas dígitos (8–15 caracteres), " + "podendo começar com '+' para código de país.");
+
+        if (!telefone.matches("^\\+?\\d{8,15}$"))
+            throw new IllegalArgumentException("Telefone inválido. Deve conter apenas dígitos (8–15 caracteres), "
+                    + "podendo começar com '+' para código de país.");
 
         // Regra de negócio: não permitir cadastro com ID ou email duplicado
         if (repository.findById(id) != null)
@@ -72,11 +74,43 @@ public class ClienteService {
         Cliente novoCliente = new Cliente(id, nome, endereco, telefone);
         repository.save(novoCliente);
     }
-    
+
+    /**
+     * Cadastra um novo cliente (versão sobrecarregada que aceita objeto Cliente).
+     */
+    public void cadastrarCliente(Cliente cliente) throws SQLException {
+        // Validações simplificadas para cadastro via interface
+        if (cliente.getId() == null || cliente.getId().trim().isEmpty())
+            throw new IllegalArgumentException("O ID do cliente não pode ser vazio.");
+
+        if (cliente.getNome() == null || cliente.getNome().trim().isEmpty())
+            throw new IllegalArgumentException("O nome não pode ser vazio.");
+
+        if (cliente.getEndereco() == null || cliente.getEndereco().trim().isEmpty())
+            throw new IllegalArgumentException("O endereço não pode ser vazio.");
+
+        if (cliente.getNumeroTelefone() == null || cliente.getNumeroTelefone().trim().isEmpty())
+            throw new IllegalArgumentException("O telefone não pode ser vazio.");
+
+        // Regra de negócio: não permitir cadastro com ID duplicado
+        if (repository.findById(cliente.getId()) != null)
+            throw new IllegalArgumentException("Já existe um cliente com este ID.");
+
+        // Salva diretamente o cliente
+        repository.save(cliente);
+    }
+
     /**
      * Retorna uma lista com todos os clientes.
      */
     public List<Cliente> listarTodosClientes() throws SQLException {
+        return repository.findAll();
+    }
+
+    /**
+     * Retorna uma lista com todos os clientes (alias).
+     */
+    public List<Cliente> listarTodos() throws SQLException {
         return repository.findAll();
     }
 
@@ -99,9 +133,12 @@ public class ClienteService {
         // Primeiro, busca o cliente para garantir que ele existe
         Cliente cliente = buscarClientePorId(id);
 
-        if (novoNome == null || novoNome.trim().isEmpty()) throw new IllegalArgumentException("Nome inválido");
-        if (novoEndereco == null || novoEndereco.trim().isEmpty()) throw new IllegalArgumentException("Endereço inválido");
-        if (novoTelefone == null || novoTelefone.trim().isEmpty()) throw new IllegalArgumentException("Telefone inválido");
+        if (novoNome == null || novoNome.trim().isEmpty())
+            throw new IllegalArgumentException("Nome inválido");
+        if (novoEndereco == null || novoEndereco.trim().isEmpty())
+            throw new IllegalArgumentException("Endereço inválido");
+        if (novoTelefone == null || novoTelefone.trim().isEmpty())
+            throw new IllegalArgumentException("Telefone inválido");
 
         // Atualiza o objeto com os novos dados
         cliente.setNome(novoNome);
@@ -109,6 +146,14 @@ public class ClienteService {
         cliente.setNumeroTelefone(novoTelefone);
 
         repository.update(cliente);
+    }
+
+    /**
+     * Atualiza um cliente (versão sobrecarregada que aceita objeto Cliente).
+     */
+    public void atualizarCliente(Cliente cliente) throws SQLException {
+        atualizarCliente(cliente.getId(), cliente.getNome(), "", "",
+                cliente.getEndereco(), cliente.getNumeroTelefone());
     }
 
     /**
@@ -134,7 +179,7 @@ public class ClienteService {
      * Retorna uma lista de todos os serviços solicitados por um cliente específico.
      */
     public List<Servico> verServicosSolicitados(String clienteId) throws SQLException {
-       
+
         buscarClientePorId(clienteId);
 
         return servicoRepository.findByClienteId(clienteId);

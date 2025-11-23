@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.paintspray.controller.ServicoController"
+      spacing="0" style="-fx-background-color: #F4F6F8;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: white; -fx-padding: 20;">
+        <FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="32" iconColor="#2980B9"/>
+        <Label text="Ordens de Serviço" styleClass="label-title"/>
+    </HBox>
+
+    <!-- Filtros e Busca -->
+    <HBox spacing="10" style="-fx-background-color: white; -fx-padding: 0 20 20 20;">
+        <TextField fx:id="searchField" promptText="Buscar por descrição, tipo ou veículo..." 
+                  HBox.hgrow="ALWAYS" prefHeight="35"/>
+        
+        <ComboBox fx:id="statusFilterCombo" prefWidth="200" prefHeight="35"/>
+        
+        <Button>
+            <graphic>
+                <FontIcon iconLiteral="mdi2m-magnify" iconSize="18"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Tabela de Serviços -->
+    <VBox spacing="10" style="-fx-padding: 20;" VBox.vgrow="ALWAYS">
+        <TableView fx:id="servicoTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" text="OS #" prefWidth="60"/>
+                <TableColumn fx:id="tipoColumn" text="Tipo" prefWidth="150"/>
+                <TableColumn fx:id="descricaoColumn" text="Descrição" prefWidth="180"/>
+                <TableColumn fx:id="clienteColumn" text="Cliente" prefWidth="150"/>
+                <TableColumn fx:id="veiculoColumn" text="Veículo" prefWidth="140"/>
+                <TableColumn fx:id="precoColumn" text="Preço" prefWidth="100"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="150"/>
+            </columns>
+        </TableView>
+
+        <!-- Botões de Ação -->
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Ver Detalhes" onAction="#handleDetalhes" styleClass="button-secondary">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2e-eye" iconSize="16"/>
+                </graphic>
+            </Button>
+            
+            <Button text="Iniciar" onAction="#handleIniciar" styleClass="button-primary">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2p-play" iconSize="16"/>
+                </graphic>
+            </Button>
+            
+            <Button text="Concluir" onAction="#handleConcluir" styleClass="button-success">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2c-check" iconSize="16"/>
+                </graphic>
+            </Button>
+            
+            <Button text="Cancelar" onAction="#handleCancelar" styleClass="button-danger">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2c-close" iconSize="16"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+
+</VBox>

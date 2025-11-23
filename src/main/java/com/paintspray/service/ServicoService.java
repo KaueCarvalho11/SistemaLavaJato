@@ -169,9 +169,23 @@ public class ServicoService {
     }
 
     /**
+     * Lista todos os serviços (alias).
+     */
+    public List<Servico> listarTodos() throws SQLException {
+        return servicoRepository.findAll();
+    }
+
+    /**
      * Lista serviços finalizados.
      */
     public List<Servico> listarServicosRealizados() throws SQLException {
+        return servicoRepository.findByStatus(StatusServico.FINALIZADO);
+    }
+
+    /**
+     * Lista serviços finalizados (alias).
+     */
+    public List<Servico> listarServicosFinalizados() throws SQLException {
         return servicoRepository.findByStatus(StatusServico.FINALIZADO);
     }
 
@@ -187,6 +201,13 @@ public class ServicoService {
      */
     public List<Servico> listarServicosPendentes() throws SQLException {
         return servicoRepository.findByStatus(StatusServico.PENDENTE);
+    }
+
+    /**
+     * Lista serviços aguardando pagamento.
+     */
+    public List<Servico> listarServicosAguardandoPagamento() throws SQLException {
+        return servicoRepository.findByStatus(StatusServico.AGUARDANDO_PAGAMENTO);
     }
 
     /**
@@ -218,6 +239,18 @@ public class ServicoService {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
         return servico;
+    }
+
+    /**
+     * Atualiza o status de um serviço.
+     */
+    public void atualizarStatusServico(int servicoId, StatusServico novoStatus) throws SQLException {
+        Servico servico = servicoRepository.findById(String.valueOf(servicoId));
+        if (servico == null) {
+            throw new IllegalArgumentException("Serviço não encontrado");
+        }
+
+        servicoRepository.updateStatus(servicoId, novoStatus);
     }
 
     /**

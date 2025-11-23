@@ -55,6 +55,14 @@ public class VeiculoService {
     }
 
     /**
+     * Cadastra um novo veículo (versão sobrecarregada que aceita objeto Veiculo).
+     */
+    public void cadastrarVeiculo(Veiculo veiculo) throws SQLException {
+        cadastrarVeiculo(veiculo.getIdCliente(), veiculo.getModelo(),
+                veiculo.getCor(), veiculo.getAnoFabricacao());
+    }
+
+    /**
      * Busca um veículo pelo ID.
      */
     public Veiculo buscarVeiculoPorId(int id) throws SQLException {
@@ -88,6 +96,14 @@ public class VeiculoService {
             existente.setAnoFabricacao(anoFabricacao);
         }
         repository.update(existente);
+    }
+
+    /**
+     * Atualiza um veículo (versão sobrecarregada que aceita objeto Veiculo).
+     */
+    public void atualizarVeiculo(Veiculo veiculo) throws SQLException {
+        atualizarVeiculo(veiculo.getId(), veiculo.getModelo(),
+                veiculo.getCor(), veiculo.getAnoFabricacao());
     }
 
     /**

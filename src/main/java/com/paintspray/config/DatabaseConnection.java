@@ -28,8 +28,14 @@ public class DatabaseConnection {
 
     public static synchronized DatabaseConnection getInstance() {
         try {
-            if (instance == null || instance.getConnection().isClosed()) {
+            if (instance == null) {
                 instance = new DatabaseConnection();
+            } else if (instance.getConnection().isClosed()) {
+                // Reconecta se a conexão foi fechada
+                instance.connection = DriverManager.getConnection(instance.URL);
+                try (Statement stmt = instance.connection.createStatement()) {
+                    stmt.execute("PRAGMA foreign_keys = ON;");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,6 +44,17 @@ public class DatabaseConnection {
     }
 
     public Connection getConnection() {
+        try {
+            // Verifica se a conexão está fechada e reconecta
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(URL);
+                try (Statement stmt = connection.createStatement()) {
+                    stmt.execute("PRAGMA foreign_keys = ON;");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return connection;
     }
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.paintspray.controller.MainController"
+            fx:id="mainBorderPane"
+            prefHeight="720" prefWidth="1280">
+
+    <!-- Menu Lateral Esquerdo -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250" spacing="0">
+            <!-- Logo/Header -->
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 20 30 20;">
+                <FontIcon iconLiteral="mdi2c-car-wash" iconSize="48" iconColor="white"/>
+                <Label text="Paint-Spray" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Bem-vindo!" 
+                       style="-fx-text-fill: #95A5A6; -fx-font-size: 12px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: rgba(255,255,255,0.1);"/>
+
+            <!-- Botões do Menu -->
+            <VBox spacing="0" VBox.vgrow="ALWAYS">
+                <Button fx:id="dashboardBtn" text="Dashboard" onAction="#handleDashboard" 
+                       styleClass="sidebar-button" maxWidth="Infinity" alignment="CENTER_LEFT">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" iconColor="white"/>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="clientesBtn" text="Clientes e Veículos" onAction="#handleClientes" 
+                       styleClass="sidebar-button" maxWidth="Infinity" alignment="CENTER_LEFT">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-account-group" iconSize="20" iconColor="white"/>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="servicosBtn" text="Ordens de Serviço" onAction="#handleServicos" 
+                       styleClass="sidebar-button" maxWidth="Infinity" alignment="CENTER_LEFT">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="20" iconColor="white"/>
+                    </graphic>
+                </Button>
+
+                <!-- Spacer -->
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.1);"/>
+
+                <Button fx:id="logoutBtn" text="Sair" onAction="#handleLogout" 
+                       styleClass="sidebar-button" maxWidth="Infinity" alignment="CENTER_LEFT">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2l-logout" iconSize="20" iconColor="white"/>
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Área Central (Conteúdo dinâmico) -->
+    <center>
+        <StackPane>
+            <!-- Área de conteúdo principal -->
+            <VBox fx:id="contentArea" spacing="0" 
+                  style="-fx-background-color: #F4F6F8;">
+            </VBox>
+
+            <!-- Floating Action Button (FAB) -->
+            <Button text="+" onAction="#handleNovaOrdem" styleClass="fab" 
+                   StackPane.alignment="BOTTOM_RIGHT">
+                <StackPane.margin>
+                    <Insets bottom="30" right="30"/>
+                </StackPane.margin>
+            </Button>
+        </StackPane>
+    </center>
+
+</BorderPane>
