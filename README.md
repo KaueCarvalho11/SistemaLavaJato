@@ -33,16 +33,16 @@ SistemaLavaJato/
 
 ## Packages
 
-- `com.ufersa.sistemalavajato` - Package raiz
-- `com.ufersa.sistemalavajato.model` - Classes de modelo (entidades)
-- `com.ufersa.sistemalavajato.repository` - Camada de persistência de dados
-- `com.ufersa.sistemalavajato.service` - Lógica de negócio
-- `com.ufersa.sistemalavajato.ui` - Interface do usuário
+- `com.paintspray` - Package raiz
+- `com.paintspray.model` - Classes de modelo (entidades)
+- `com.paintspray.repository` - Camada de persistência de dados
+- `com.paintspray.service` - Lógica de negócio
+- `com.paintspray.ui` - Interface do usuário
 
 ## Principais Correções Realizadas
 
 1. **Estrutura de diretórios**: Migração de `src/main/sistemalavajato/` para `src/main/java/com/ufersa/sistemalavajato/`
-2. **Packages**: Correção de todas as declarações de package para `com.ufersa.sistemalavajato.*`
+2. **Packages**: Correção de todas as declarações de package para `com.paintspray.*`
 3. **Configuração Maven**: Adição do arquivo `pom.xml` para gerenciamento de dependências
 4. **Configuração VS Code**: Arquivo `.vscode/settings.json` para reconhecimento correto dos source folders
 5. **Herança**: Implementação correta da herança entre `Funcionario` e `Usuario`
@@ -51,7 +51,7 @@ SistemaLavaJato/
 
 1. Certifique-se de ter o Java 11+ instalado
 2. Execute: `mvn compile` para compilar o projeto
-3. Execute: `mvn exec:java -Dexec.mainClass="com.ufersa.sistemalavajato.Program"` para executar
+3. Execute: `mvn exec:java -Dexec.mainClass="com.paintspray.Program"` para executar
 
 ## Desenvolvimento
 
