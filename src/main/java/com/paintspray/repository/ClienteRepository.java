@@ -10,39 +10,38 @@ import java.util.List;
 
 /**
  * Camada de Acesso a Dados (DAO/Repository) para a entidade Cliente.
- * Centraliza toda a lógica de interação com o banco de dados para clientes,
- * lidando com as tabelas 'usuarios' e 'clientes'.
+ * Agora com exclusão em cascata manual para remover também os veículos do cliente.
  */
 public class ClienteRepository extends BaseRepository<Cliente> {
 
     /**
-     * Salva um novo cliente diretamente na tabela 'clientes'.
+     * Salva um novo cliente
      */
     @Override
     public void save(Cliente cliente) throws SQLException {
-       String sqlCliente = "INSERT INTO clientes (id_usuario, endereco, numero_telefone) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO clientes (id, nome, endereco, numero_telefone) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sqlCliente)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getId());
-            stmt.setString(2, cliente.getNome()); // Adicionado: Nome agora é salvo aqui
+            stmt.setString(2, cliente.getNome());
             stmt.setString(3, cliente.getEndereco());
             stmt.setString(4, cliente.getNumeroTelefone());
-            
+
             stmt.executeUpdate();
         }
     }
 
     /**
-     * Atualiza os dados de um cliente existente.
+     * Atualiza os dados de um cliente
      */
     @Override
     public void update(Cliente cliente) throws SQLException {
-        String sqlCliente = "UPDATE clientes SET nome = ?, endereco = ?, numero_telefone = ? WHERE id = ?";
+        String sql = "UPDATE clientes SET nome = ?, endereco = ?, numero_telefone = ? WHERE id = ?";
 
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sqlCliente)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getNome());
             stmt.setString(2, cliente.getEndereco());
@@ -54,22 +53,32 @@ public class ClienteRepository extends BaseRepository<Cliente> {
     }
 
     /**
-     * Deleta um cliente do banco de dados.
+     * EXCLUSÃO EM CASCATA:
+     * Ao deletar um cliente → primeiro apaga todos os veículos
      */
     @Override
-    public void delete(String id) throws SQLException {
-        String sqlCliente = "DELETE FROM clientes WHERE id = ?";
+    public void delete(String idCliente) throws SQLException {
 
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sqlCliente)) {
-            
-            stmt.setString(1, id);
-            stmt.executeUpdate();
-        }
+        executeTransaction(connection -> {
+
+            // 1. Apagar todos os veículos associados ao cliente
+            String deleteVeiculos = "DELETE FROM veiculos WHERE id_cliente = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(deleteVeiculos)) {
+                stmt.setString(1, idCliente);
+                stmt.executeUpdate();
+            }
+
+            // 2. Apagar o cliente
+            String deleteCliente = "DELETE FROM clientes WHERE id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(deleteCliente)) {
+                stmt.setString(1, idCliente);
+                stmt.executeUpdate();
+            }
+        });
     }
 
     /**
-     * Busca um cliente pelo seu ID, juntando dados das duas tabelas.
+     * Busca um cliente pelo ID
      */
     @Override
     public Cliente findById(String id) throws SQLException {
@@ -78,7 +87,7 @@ public class ClienteRepository extends BaseRepository<Cliente> {
     }
 
     /**
-     * Busca todos os clientes cadastrados.
+     * Lista todos os clientes ordenados por nome
      */
     @Override
     public List<Cliente> findAll() throws SQLException {
@@ -87,17 +96,14 @@ public class ClienteRepository extends BaseRepository<Cliente> {
     }
 
     /**
-     * Método auxiliar privado para "traduzir" uma linha do resultado da consulta
-     * (ResultSet)
-     * em um objeto Cliente completo.
+     * Converte uma linha do ResultSet em um objeto Cliente
      */
-    
     private Cliente mapResultSetToCliente(ResultSet rs) throws SQLException {
         return new Cliente(
-            rs.getString("id"),
-            rs.getString("nome"),
-            rs.getString("endereco"),
-            rs.getString("numero_telefone")
+                rs.getString("id"),
+                rs.getString("nome"),
+                rs.getString("endereco"),
+                rs.getString("numero_telefone")
         );
     }
 }
