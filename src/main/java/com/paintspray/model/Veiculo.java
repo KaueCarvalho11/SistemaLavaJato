@@ -2,7 +2,7 @@ package com.paintspray.model;
 
 public class Veiculo {
     // Atributos
-    private int id;   
+    private int id;
     private String modelo;
     private String cor;
     private int anoFabricacao;
@@ -16,14 +16,14 @@ public class Veiculo {
         this.anoFabricacao = anoFabricacao;
         this.idCliente = idCliente;
     }
-    
+
     // Construtor sem ID (para novos veículos)
     public Veiculo(String modelo, String cor, int anoFabricacao, String idCliente) {
         this.modelo = modelo;
         this.cor = cor;
         this.anoFabricacao = anoFabricacao;
         this.idCliente = idCliente;
-    }   
+    }
 
     // Getters e Setters
     public int getId() {

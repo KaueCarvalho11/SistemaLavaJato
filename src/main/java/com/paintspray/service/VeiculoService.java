@@ -21,32 +21,32 @@ public class VeiculoService {
      */
     public void cadastrarVeiculo(String idCliente, String modelo, String cor, int anoFabricacao) throws SQLException {
         // Validação do ID do cliente
-        if (idCliente == null || idCliente.trim().isEmpty()) 
+        if (idCliente == null || idCliente.trim().isEmpty())
             throw new IllegalArgumentException("ID do cliente é obrigatório.");
 
         // Validação do modelo
-        if (modelo == null || modelo.trim().isEmpty()) 
+        if (modelo == null || modelo.trim().isEmpty())
             throw new IllegalArgumentException("Modelo do veículo não pode ser vazio.");
-        
-        if (!modelo.matches("^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ]+$")) 
+
+        if (!modelo.matches("^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ]+$"))
             throw new IllegalArgumentException("Modelo só pode conter letras, números e espaços.");
-        
-        if (modelo.contains("  ")) 
+
+        if (modelo.contains("  "))
             throw new IllegalArgumentException("Modelo não pode conter espaços duplos.");
 
         // Validação da cor
-        if (cor == null || cor.trim().isEmpty()) 
+        if (cor == null || cor.trim().isEmpty())
             throw new IllegalArgumentException("Cor do veículo não pode ser vazia.");
-        
-        if (!cor.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$")) 
+
+        if (!cor.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$"))
             throw new IllegalArgumentException("Cor só pode conter letras e espaços.");
-        
-        if (cor.contains("  ")) 
+
+        if (cor.contains("  "))
             throw new IllegalArgumentException("Cor não pode conter espaços duplos.");
-        
+
         // Validação do ano de fabricação
         int anoAtual = java.time.Year.now().getValue();
-        if (anoFabricacao < 1900 || anoFabricacao > anoAtual) 
+        if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
             throw new IllegalArgumentException("Ano de fabricação inválido.");
 
         // Criação do objeto Veiculo após validações

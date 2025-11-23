@@ -6,6 +6,7 @@ package com.paintspray.enums;
  */
 public enum StatusServico {
     PENDENTE("Pendente"),
+    EM_ANDAMENTO("Em andamento"),
     AGUARDANDO_PAGAMENTO("Aguardando pagamento"),
     CANCELADO("Cancelado"),
     FINALIZADO("Finalizado");
@@ -22,6 +23,7 @@ public enum StatusServico {
 
     /**
      * Converte uma string para o enum correspondente.
+     * 
      * @param texto O texto a ser convertido
      * @return O enum correspondente
      * @throws IllegalArgumentException se o texto não corresponder a nenhum enum

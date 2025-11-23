@@ -6,23 +6,23 @@ package com.paintspray.model;
  */
 public class Usuario {
 
-    private String id;
-    private String nome;
-    private String email;
-    private String senha;
+	private String id;
+	private String nome;
+	private String email;
+	private String senha;
 
-    public Usuario() {
-    }
+	public Usuario() {
+	}
 
-    /**
-     * Construtor para criação de usuário.
-     */
-    public Usuario(String id, String nome, String email, String senha) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-    }
+	/**
+	 * Construtor para criação de usuário.
+	 */
+	public Usuario(String id, String nome, String email, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.senha = senha;
+	}
 
 	public String getId() {
 		return id;
@@ -48,16 +48,16 @@ public class Usuario {
 		this.email = email;
 	}
 
-    public String getSenha() {
-        return senha;
-    }
+	public String getSenha() {
+		return senha;
+	}
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 
-    @Override
-    public String toString() {
-        return "Usuário: " + nome + " [" + email + "]";
-    }
+	@Override
+	public String toString() {
+		return "Usuário: " + nome + " [" + email + "]";
+	}
 }

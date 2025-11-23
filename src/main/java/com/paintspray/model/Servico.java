@@ -18,8 +18,8 @@ public class Servico {
     DecimalFormat df = new DecimalFormat("0.00");
 
     // Construtor completo
-    public Servico(int idServico, TipoServico tipo, String descricao, double preco, 
-                   StatusServico status, FormaPagamento formaPagamento, Veiculo veiculo, Usuario usuario) {
+    public Servico(int idServico, TipoServico tipo, String descricao, double preco,
+            StatusServico status, FormaPagamento formaPagamento, Veiculo veiculo, Usuario usuario) {
         this.idServico = idServico;
         this.tipo = tipo;
         this.descricao = descricao;
@@ -29,7 +29,7 @@ public class Servico {
         this.veiculo = veiculo;
         this.usuario = usuario;
     }
-    
+
     // Construtor para novos serviços
     public Servico(TipoServico tipo, String descricao, Veiculo veiculo, Usuario usuario) {
         this.tipo = tipo;
@@ -110,8 +110,8 @@ public class Servico {
                 "\nDescrição: " + descricao +
                 "\nPreço: R$" + df.format(preco) +
                 "\nStatus: " + (status != null ? status.getDescricao() : "N/A") +
-                "\nForma de Pagamento: " + (formaPagamento != null ? formaPagamento.getDescricao() : "N/A") + 
-                "\nTipo: " + (tipo != null ? tipo.getDescricao() : "N/A") + 
+                "\nForma de Pagamento: " + (formaPagamento != null ? formaPagamento.getDescricao() : "N/A") +
+                "\nTipo: " + (tipo != null ? tipo.getDescricao() : "N/A") +
                 "\nVeículo: " + veiculo.getModelo() +
                 "\nUsuário: " + usuario.getNome();
     }
