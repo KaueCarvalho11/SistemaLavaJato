@@ -2,7 +2,10 @@ package com.paintspray.repository;
 
 import com.paintspray.model.Servico;
 import com.paintspray.model.Veiculo;
-import com.paintspray.model.Funcionario;
+import com.paintspray.model.Usuario;
+import com.paintspray.enums.StatusServico;
+import com.paintspray.enums.TipoServico;
+import com.paintspray.enums.FormaPagamento;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,308 +14,210 @@ import java.util.List;
  */
 public class ServicoRepository extends BaseRepository<Servico> {
 
-	@Override
-	public void save(Servico servico) throws SQLException {
-		String sql = "INSERT INTO servicos (tipo, descricao, preco, status, forma_pagamento, " +
-				"num_chassi, id_funcionario, data_inicio, data_conclusao) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    @Override
+    public void save(Servico servico) throws SQLException {
+        String sql = "INSERT INTO servicos (tipo, descricao, preco, status, forma_pagamento, " +
+                "id_veiculo, id_usuario) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-		executeUpdate(sql,
-				servico.getTipo(),
-				servico.getDescricao(),
-				servico.getPreco(),
-				servico.getStatus(),
-				servico.getFormaPagamento(),
-				servico.getVeiculo() != null ? servico.getVeiculo().getNumChassi() : null,
-				servico.getFuncionario() != null ? servico.getFuncionario().getId() : null,
-				null, // data_inicio será definida quando iniciar o serviço
-				null // data_conclusao será definida quando concluir o serviço
-		);
-	}
+        executeUpdate(sql,
+                servico.getTipo() != null ? servico.getTipo().name() : null,
+                servico.getDescricao(),
+                servico.getPreco(),
+                servico.getStatus() != null ? servico.getStatus().name() : StatusServico.PENDENTE.name(),
+                servico.getFormaPagamento() != null ? servico.getFormaPagamento().name() : null,
+                servico.getVeiculo() != null ? servico.getVeiculo().getId() : null,
+                servico.getUsuario() != null ? servico.getUsuario().getId() : null
+        );
+    }
 
-	@Override
-	public Servico findById(String id) throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"WHERE s.id_servico = ?";
+    @Override
+    public Servico findById(String id) throws SQLException {
+        String sql = "SELECT s.*, " +
+                "v.id AS veiculo_id, " +
+                "v.modelo AS veiculo_modelo, " +
+                "v.cor AS veiculo_cor, " +
+                "v.ano_fabricacao AS veiculo_ano, " +
+                "v.id_cliente AS veiculo_id_cliente, " +
+                "u.id as usuario_id, " +
+                "u.nome as usuario_nome, " +
+                "u.email as usuario_email " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+                "LEFT JOIN usuarios u ON s.id_usuario = u.id " +
+                "WHERE s.id_servico = ?";
 
-		return findOne(sql, this::mapResultSetToServico, Integer.parseInt(id));
-	}
+        return findOne(sql, this::mapResultSetToServico, Integer.parseInt(id));
+    }
 
-	@Override
-	public void update(Servico servico) throws SQLException {
-		String sql = "UPDATE servicos SET tipo = ?, descricao = ?, preco = ?, status = ?, " +
-				"forma_pagamento = ?, num_chassi = ?, id_funcionario = ?, " +
-				"data_inicio = ?, data_conclusao = ? WHERE id_servico = ?";
+    @Override
+    public void update(Servico servico) throws SQLException {
+        String sql = "UPDATE servicos SET tipo = ?, descricao = ?, preco = ?, status = ?, " +
+                "forma_pagamento = ?, id_veiculo = ?, id_usuario = ? WHERE id_servico = ?";
 
-		executeUpdate(sql,
-				servico.getTipo(),
-				servico.getDescricao(),
-				servico.getPreco(),
-				servico.getStatus(),
-				servico.getFormaPagamento(),
-				servico.getVeiculo() != null ? servico.getVeiculo().getNumChassi() : null,
-				servico.getFuncionario() != null ? servico.getFuncionario().getId() : null,
-				null, // data_inicio - implementar quando necessário
-				null, // data_conclusao - implementar quando necessário
-				servico.getIdServico());
-	}
+        executeUpdate(sql,
+                servico.getTipo() != null ? servico.getTipo().name() : null,
+                servico.getDescricao(),
+                servico.getPreco(),
+                servico.getStatus() != null ? servico.getStatus().name() : null,
+                servico.getFormaPagamento() != null ? servico.getFormaPagamento().name() : null,
+                servico.getVeiculo() != null ? servico.getVeiculo().getId() : null,
+                servico.getUsuario() != null ? servico.getUsuario().getId() : null,
+                servico.getIdServico());
+    }
 
-	@Override
-	public void delete(String id) throws SQLException {
-		String sql = "DELETE FROM servicos WHERE id_servico = ?";
-		executeUpdate(sql, Integer.parseInt(id));
-	}
+    @Override
+    public void delete(String id) throws SQLException {
+        String sql = "DELETE FROM servicos WHERE id_servico = ?";
+        executeUpdate(sql, Integer.parseInt(id));
+    }
 
-	@Override
-	public List<Servico> findAll() throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"ORDER BY s.data_criacao DESC";
+    @Override
+    public List<Servico> findAll() throws SQLException {
+        String sql = "SELECT s.*, " +
+                "v.id AS veiculo_id, " +
+                "v.modelo AS veiculo_modelo, " +
+                "v.cor AS veiculo_cor, " +
+                "v.ano_fabricacao AS veiculo_ano, " +
+                "v.id_cliente AS veiculo_id_cliente, " +
+                "u.id as usuario_id, " +
+                "u.nome as usuario_nome, " +
+                "u.email as usuario_email " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+                "LEFT JOIN usuarios u ON s.id_usuario = u.id " +
+                "ORDER BY s.id_servico DESC";
 
-		return findMany(sql, this::mapResultSetToServico);
-	}
+        return findMany(sql, this::mapResultSetToServico);
+    }
 
-	/**
-	 * Busca serviços por status.
-	 */
-	public List<Servico> findByStatus(String status) throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"WHERE s.status = ? " +
-				"ORDER BY s.data_criacao DESC";
+    /**
+     * Busca serviços por status.
+     */
+    public List<Servico> findByStatus(StatusServico status) throws SQLException {
+        String sql = "SELECT s.*, " +
+                "v.id AS veiculo_id, " +
+                "v.modelo AS veiculo_modelo, " +
+                "v.cor AS veiculo_cor, " +
+                "v.ano_fabricacao AS veiculo_ano, " +
+                "v.id_cliente AS veiculo_id_cliente, " +
+                "u.id as usuario_id, " +
+                "u.nome as usuario_nome, " +
+                "u.email as usuario_email " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+                "LEFT JOIN usuarios u ON s.id_usuario = u.id " +
+                "WHERE s.status = ? " +
+                "ORDER BY s.id_servico DESC";
 
-		return findMany(sql, this::mapResultSetToServico, status);
-	}
+        return findMany(sql, this::mapResultSetToServico, status.name());
+    }
 
-	/**
-	 * Busca serviços por tipo.
-	 */
-	public List<Servico> findByTipo(String tipo) throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"WHERE s.tipo = ? " +
-				"ORDER BY s.data_criacao DESC";
+    /**
+     * Atualiza o status de um serviço.
+     */
+    public void updateStatus(int servicoId, StatusServico novoStatus) throws SQLException {
+        String sql = "UPDATE servicos SET status = ? WHERE id_servico = ?";
+        executeUpdate(sql, novoStatus.name(), servicoId);
+    }
 
-		return findMany(sql, this::mapResultSetToServico, tipo);
-	}
+    /**
+     * Cancela um serviço.
+     */
+    public void cancelarServico(int servicoId) throws SQLException {
+        String sql = "UPDATE servicos SET status = ? WHERE id_servico = ?";
+        executeUpdate(sql, StatusServico.CANCELADO.name(), servicoId);
+    }
 
-	/**
-	 * Busca serviços por veículo.
-	 */
-	public List<Servico> findByVeiculo(int numChassi) throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"WHERE s.num_chassi = ? " +
-				"ORDER BY s.data_criacao DESC";
+    /**
+     * Conta serviços por status.
+     */
+    public int countByStatus(StatusServico status) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM servicos WHERE status = ?";
+        return count(sql, status.name());
+    }
 
-		return findMany(sql, this::mapResultSetToServico, numChassi);
-	}
+    /**
+     * Busca serviços por veículo.
+     */
+    public List<Servico> findByVeiculo(int veiculoId) throws SQLException {
+        String sql = "SELECT s.*, " +
+                "v.id AS veiculo_id, " +
+                "v.modelo AS veiculo_modelo, " +
+                "v.cor AS veiculo_cor, " +
+                "v.ano_fabricacao AS veiculo_ano, " +
+                "v.id_cliente AS veiculo_id_cliente, " +
+                "u.id as usuario_id, " +
+                "u.nome as usuario_nome, " +
+                "u.email as usuario_email " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+                "LEFT JOIN usuarios u ON s.id_usuario = u.id " +
+                "WHERE s.id_veiculo = ? " +
+                "ORDER BY s.id_servico DESC";
 
-	/**
-	 * Busca serviços por funcionário.
-	 */
-	public List<Servico> findByFuncionario(String funcionarioId) throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"WHERE s.id_funcionario = ? " +
-				"ORDER BY s.data_criacao DESC";
+        return findMany(sql, this::mapResultSetToServico, veiculoId);
+    }
 
-		return findMany(sql, this::mapResultSetToServico, funcionarioId);
-	}
+    private Servico mapResultSetToServico(java.sql.ResultSet rs) throws SQLException {
+        Veiculo veiculo = null;
+        if (rs.getObject("veiculo_id") != null) {
+            veiculo = new Veiculo(
+                    rs.getInt("veiculo_id"),
+                    rs.getString("veiculo_modelo"),
+                    rs.getString("veiculo_cor"),
+                    rs.getInt("veiculo_ano"),
+                    rs.getString("veiculo_id_cliente"));
+        }
 
-	/**
-	 * Atualiza o status de um serviço.
-	 */
-	public void updateStatus(int servicoId, String novoStatus) throws SQLException {
-		String sql = "UPDATE servicos SET status = ? WHERE id_servico = ?";
-		executeUpdate(sql, novoStatus, servicoId);
-	}
+        Usuario usuario = null;
+        if (rs.getString("usuario_id") != null) {
+            usuario = new Usuario(
+                    rs.getString("usuario_id"),
+                    rs.getString("usuario_nome"),
+                    rs.getString("usuario_email"),
+                    "" // senha não deve estar na consulta
+            );
+        }
 
-	/**
-	 * Inicia um serviço (atualiza status e data_inicio).
-	 */
-	public void iniciarServico(int servicoId) throws SQLException {
-		String sql = "UPDATE servicos SET status = 'EM_ANDAMENTO', data_inicio = CURRENT_TIMESTAMP WHERE id_servico = ?";
-		executeUpdate(sql, servicoId);
-	}
+        // Converte strings do banco para ENUMs
+        TipoServico tipo = rs.getString("tipo") != null ? TipoServico.valueOf(rs.getString("tipo")) : null;
+        StatusServico status = rs.getString("status") != null ? StatusServico.valueOf(rs.getString("status")) : null;
+        FormaPagamento formaPagamento = rs.getString("forma_pagamento") != null ? 
+                FormaPagamento.valueOf(rs.getString("forma_pagamento")) : null;
 
-	/**
-	 * Conclui um serviço (atualiza status e data_conclusao).
-	 */
-	public void concluirServico(int servicoId) throws SQLException {
-		String sql = "UPDATE servicos SET status = 'CONCLUIDO', data_conclusao = CURRENT_TIMESTAMP WHERE id_servico = ?";
-		executeUpdate(sql, servicoId);
-	}
+        // Cria o serviço
+        Servico servico = new Servico(
+                rs.getInt("id_servico"),
+                tipo,
+                rs.getString("descricao"),
+                rs.getDouble("preco"),
+                status,
+                formaPagamento,
+                veiculo,
+                usuario);
 
-	/**
-	 * Cancela um serviço.
-	 */
-	public void cancelarServico(int servicoId) throws SQLException {
-		String sql = "UPDATE servicos SET status = 'CANCELADO' WHERE id_servico = ?";
-		executeUpdate(sql, servicoId);
-	}
+        return servico;
+    }
 
-	/**
-	 * Conta serviços por status.
-	 */
-	public int countByStatus(String status) throws SQLException {
-		String sql = "SELECT COUNT(*) FROM servicos WHERE status = ?";
-		return count(sql, status);
-	}
-
-	/**
-	 * Verifica se um serviço existe.
-	 */
-	public boolean existsById(int servicoId) throws SQLException {
-		String sql = "SELECT 1 FROM servicos WHERE id_servico = ?";
-		return exists(sql, servicoId);
-	}
-
-	private Servico mapResultSetToServico(java.sql.ResultSet rs) throws SQLException {
-		Veiculo veiculo = null;
-		if (rs.getObject("veiculo_num_chassi") != null) {
-			veiculo = new Veiculo(
-					rs.getString("veiculo_id_cliente"),
-					rs.getString("veiculo_modelo"),
-					rs.getInt("veiculo_num_chassi"),
-					rs.getDouble("veiculo_quilometragem"),
-					rs.getDouble("veiculo_preco"),
-					rs.getString("veiculo_cor"),
-					rs.getInt("veiculo_ano"),
-					rs.getString("veiculo_status"));
-		}
-
-		Funcionario funcionario = null;
-		if (rs.getString("funcionario_id") != null) {
-			funcionario = new Funcionario(
-					rs.getString("funcionario_id"),
-					rs.getString("funcionario_nome"),
-					"", // email - não está na consulta
-					"" // senha - não deveria estar na consulta
-			);
-		}
-
-		// Cria o serviço
-		Servico servico = new Servico(
-				rs.getInt("id_servico"),
-				rs.getString("tipo"),
-				veiculo,
-				funcionario,
-				rs.getString("forma_pagamento"), 
-				rs.getString("descricao"));
-
-		// Define outros atributos
-		servico.setPreco(rs.getDouble("preco"));
-		servico.setStatus(rs.getString("status"));
-		servico.setFormaPagamento(rs.getString("forma_pagamento"));
-
-		return servico;
-	}
-
-	/**
-	 * Busca todos os serviços associados aos veículos de um cliente específico.
-	 * 
-	 * @param clienteId O ID do cliente.
-	 * @return Uma lista de serviços do cliente.
-	 * @throws SQLException
-	 */
-	public List<Servico> findByClienteId(String clienteId) throws SQLException {
-		String sql = "SELECT s.*, " +
-				"v.num_chassi AS veiculo_num_chassi, " +
-				"v.modelo AS veiculo_modelo, " +
-				"v.cor AS veiculo_cor, " +
-				"v.id_cliente AS veiculo_id_cliente, " +
-				"v.quilometragem AS veiculo_quilometragem, " +
-				"v.preco AS veiculo_preco, " +
-				"v.ano_fabricacao AS veiculo_ano, " +
-				"v.status AS veiculo_status, " +
-				"f.id_usuario as funcionario_id, " +
-				"u.nome as funcionario_nome " +
-				"FROM servicos s " +
-				"LEFT JOIN veiculos v ON s.num_chassi = v.num_chassi " +
-				"LEFT JOIN funcionarios f ON s.id_funcionario = f.id_usuario " +
-				"LEFT JOIN usuarios u ON f.id_usuario = u.id " +
-				"WHERE v.id_cliente = ? " +
-				"ORDER BY s.data_criacao DESC";
-		return findMany(sql, this::mapResultSetToServico, clienteId);
-	}
+    /**
+     * Busca todos os serviços associados aos veículos de um cliente específico.
+     */
+    public List<Servico> findByClienteId(String clienteId) throws SQLException {
+        String sql = "SELECT s.*, " +
+                "v.id AS veiculo_id, " +
+                "v.modelo AS veiculo_modelo, " +
+                "v.cor AS veiculo_cor, " +
+                "v.ano_fabricacao AS veiculo_ano, " +
+                "v.id_cliente AS veiculo_id_cliente, " +
+                "u.id as usuario_id, " +
+                "u.nome as usuario_nome, " +
+                "u.email as usuario_email " +
+                "FROM servicos s " +
+                "LEFT JOIN veiculos v ON s.id_veiculo = v.id " +
+                "LEFT JOIN usuarios u ON s.id_usuario = u.id " +
+                "WHERE v.id_cliente = ? " +
+                "ORDER BY s.id_servico DESC";
+        return findMany(sql, this::mapResultSetToServico, clienteId);
+    }
 }

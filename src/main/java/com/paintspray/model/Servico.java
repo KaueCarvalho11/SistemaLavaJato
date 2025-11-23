@@ -1,4 +1,8 @@
 package com.paintspray.model;
+
+import com.paintspray.enums.StatusServico;
+import com.paintspray.enums.TipoServico;
+import com.paintspray.enums.FormaPagamento;
 import java.text.DecimalFormat;
 
 public class Servico {
@@ -6,20 +10,33 @@ public class Servico {
     private int idServico;
     private String descricao;
     private double preco;
-    private String status;
-    private String formaPagamento;
-    private String tipo;
+    private StatusServico status;
+    private FormaPagamento formaPagamento;
+    private TipoServico tipo;
     private Veiculo veiculo;
-    private Funcionario funcionario;
+    private Usuario usuario;
     DecimalFormat df = new DecimalFormat("0.00");
 
-    public Servico(int idServico, String tipo, Veiculo veiculo, Funcionario funcionario, String formaPagamento, String descricao) {
+    // Construtor completo
+    public Servico(int idServico, TipoServico tipo, String descricao, double preco, 
+                   StatusServico status, FormaPagamento formaPagamento, Veiculo veiculo, Usuario usuario) {
         this.idServico = idServico;
         this.tipo = tipo;
-        this.veiculo = veiculo;
-        this.funcionario = funcionario;
-        this.formaPagamento = formaPagamento;
         this.descricao = descricao;
+        this.preco = preco;
+        this.status = status;
+        this.formaPagamento = formaPagamento;
+        this.veiculo = veiculo;
+        this.usuario = usuario;
+    }
+    
+    // Construtor para novos serviços
+    public Servico(TipoServico tipo, String descricao, Veiculo veiculo, Usuario usuario) {
+        this.tipo = tipo;
+        this.descricao = descricao;
+        this.veiculo = veiculo;
+        this.usuario = usuario;
+        this.status = StatusServico.PENDENTE;
     }
 
     // --- Getters e Setters ---
@@ -47,27 +64,27 @@ public class Servico {
         this.preco = preco;
     }
 
-    public String getStatus() {
+    public StatusServico getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusServico status) {
         this.status = status;
     }
 
-    public String getFormaPagamento() {
+    public FormaPagamento getFormaPagamento() {
         return formaPagamento;
     }
 
-    public void setFormaPagamento(String formaPagamento) {
+    public void setFormaPagamento(FormaPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
     }
 
-    public String getTipo() {
+    public TipoServico getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoServico tipo) {
         this.tipo = tipo;
     }
 
@@ -79,23 +96,23 @@ public class Servico {
         this.veiculo = veiculo;
     }
 
-    public Funcionario getFuncionario() {
-        return funcionario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setFuncionario(Funcionario funcionario) {
-        this.funcionario = funcionario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override
     public String toString() {
-        return "Id: " + idServico +
+        return "ID: " + idServico +
                 "\nDescrição: " + descricao +
                 "\nPreço: R$" + df.format(preco) +
-                "\nStatus: " + status +
-                "\nForma de Pagamento: " + formaPagamento + 
-                "\nTipo: " + tipo + 
-                "\nVeiculo: " + veiculo.getModelo() +
-                "\nFuncionário: " + funcionario.getNome();
+                "\nStatus: " + (status != null ? status.getDescricao() : "N/A") +
+                "\nForma de Pagamento: " + (formaPagamento != null ? formaPagamento.getDescricao() : "N/A") + 
+                "\nTipo: " + (tipo != null ? tipo.getDescricao() : "N/A") + 
+                "\nVeículo: " + veiculo.getModelo() +
+                "\nUsuário: " + usuario.getNome();
     }
 }

@@ -44,7 +44,14 @@ public class DatabaseConnection {
     private void createTables() throws SQLException {
         try (Statement stmt = connection.createStatement()) {
             
-            // REQUISITO KANBAN: Tabela clientes independente (sem FK para usuarios)
+            // Tabela usuarios - Proprietário da oficina
+            stmt.execute("CREATE TABLE IF NOT EXISTS usuarios (" +
+                "id TEXT PRIMARY KEY, " +
+                "nome TEXT NOT NULL, " +
+                "email TEXT UNIQUE NOT NULL, " +
+                "senha TEXT NOT NULL)");
+
+            // Tabela clientes
             stmt.execute("CREATE TABLE IF NOT EXISTS clientes (" +
                 "id TEXT PRIMARY KEY, " +           
                 "nome TEXT NOT NULL, " +
@@ -53,26 +60,27 @@ public class DatabaseConnection {
                 "data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 "data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP)");
 
-            // Ajuste necessário para veículos (Chassi como TEXTO)
+            // Tabela veículos (ajustada para motos)
             stmt.execute("CREATE TABLE IF NOT EXISTS veiculos (" +
-                    "num_chassi TEXT PRIMARY KEY, " + 
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
                     "modelo TEXT NOT NULL, " +
                     "cor TEXT, " +
-                    "ano INTEGER, " +
-                    "id_cliente INTEGER, " +
+                    "ano_fabricacao INTEGER, " +
+                    "id_cliente TEXT NOT NULL, " +
                     "FOREIGN KEY(id_cliente) REFERENCES clientes(id) ON DELETE CASCADE)");
 
-            // REQUISITO KANBAN: Atualizar tabela servicos (Campo 'tipo' pronto para os novos Enums)
+            // Tabela servicos (atualizada com novos campos)
             stmt.execute("CREATE TABLE IF NOT EXISTS servicos (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "tipo TEXT NOT NULL, " + // Vai receber 'Pintura', 'Funilaria', etc.
+                    "id_servico INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "tipo TEXT NOT NULL, " +
                     "descricao TEXT, " +
                     "preco REAL, " +
-                    "status TEXT, " +
-                    "num_chassi TEXT, " +
-                    "data_entrada TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
-                    "data_conclusao TIMESTAMP, " +
-                    "FOREIGN KEY(num_chassi) REFERENCES veiculos(num_chassi) ON DELETE CASCADE)");
+                    "status TEXT DEFAULT 'PENDENTE', " +
+                    "forma_pagamento TEXT, " +
+                    "id_veiculo INTEGER NOT NULL, " +
+                    "id_usuario TEXT NOT NULL, " +
+                    "FOREIGN KEY(id_veiculo) REFERENCES veiculos(id) ON DELETE CASCADE, " +
+                    "FOREIGN KEY(id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE)");
         }
     }
 }

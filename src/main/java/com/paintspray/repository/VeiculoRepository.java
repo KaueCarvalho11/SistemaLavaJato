@@ -11,68 +11,53 @@ public class VeiculoRepository extends BaseRepository<Veiculo> {
 
     @Override
     public void save(Veiculo veiculo) throws SQLException {
-        String sql = "INSERT INTO veiculos (num_chassi, id_cliente, modelo, quilometragem, preco, cor, ano_fabricacao, status) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO veiculos (modelo, cor, ano_fabricacao, id_cliente) "
+                + "VALUES (?, ?, ?, ?)";
         executeUpdate(sql,
-                veiculo.getNumChassi(),
-                veiculo.getIdCliente(),
                 veiculo.getModelo(),
-                veiculo.getQuilometragem(),
-                veiculo.getPreco(),
                 veiculo.getCor(),
                 veiculo.getAnoFabricacao(),
-                veiculo.getStatus());
+                veiculo.getIdCliente());
     }
 
     @Override
     public Veiculo findById(String id) throws SQLException {
-        int numChassi = Integer.parseInt(id);
-        return findByNumChassi(numChassi);
-    }
-
-    public Veiculo findByNumChassi(int numChassi) throws SQLException {
-        String sql = "SELECT * FROM veiculos WHERE num_chassi = ?";
-        return findOne(sql, this::mapResultSetToVeiculo, numChassi);
+        int veiculoId = Integer.parseInt(id);
+        String sql = "SELECT * FROM veiculos WHERE id = ?";
+        return findOne(sql, this::mapResultSetToVeiculo, veiculoId);
     }
 
     @Override
     public void update(Veiculo veiculo) throws SQLException {
-        String sql = "UPDATE veiculos SET id_cliente = ?, modelo = ?, quilometragem = ?, preco = ?, cor = ?, ano_fabricacao = ?, status = ? "
-                +
-                "WHERE num_chassi = ?";
+        String sql = "UPDATE veiculos SET modelo = ?, cor = ?, ano_fabricacao = ?, id_cliente = ? "
+                + "WHERE id = ?";
         executeUpdate(sql,
-                veiculo.getIdCliente(),
                 veiculo.getModelo(),
-                veiculo.getQuilometragem(),
-                veiculo.getPreco(),
                 veiculo.getCor(),
                 veiculo.getAnoFabricacao(),
-                veiculo.getStatus(),
-                veiculo.getNumChassi());
+                veiculo.getIdCliente(),
+                veiculo.getId());
     }
 
     @Override
-    public void delete(String numChassi) throws SQLException {
-        String sql = "DELETE FROM veiculos WHERE num_chassi = ?";
-        executeUpdate(sql, Integer.parseInt(numChassi));
+    public void delete(String id) throws SQLException {
+        String sql = "DELETE FROM veiculos WHERE id = ?";
+        executeUpdate(sql, Integer.parseInt(id));
     }
 
     @Override
     public List<Veiculo> findAll() throws SQLException {
-        String sql = "SELECT * FROM veiculos ORDER BY data_criacao DESC";
+        String sql = "SELECT * FROM veiculos ORDER BY id DESC";
         return findMany(sql, this::mapResultSetToVeiculo);
     }
 
     private Veiculo mapResultSetToVeiculo(java.sql.ResultSet rs) throws SQLException {
         return new Veiculo(
-                rs.getString("id_cliente"),
+                rs.getInt("id"),
                 rs.getString("modelo"),
-                rs.getInt("num_chassi"),
-                rs.getDouble("quilometragem"),
-                rs.getDouble("preco"),
                 rs.getString("cor"),
                 rs.getInt("ano_fabricacao"),
-                rs.getString("status"));
+                rs.getString("id_cliente"));
     }
 
     /**

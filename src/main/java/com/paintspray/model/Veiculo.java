@@ -1,68 +1,45 @@
 package com.paintspray.model;
-import java.text.DecimalFormat;
 
 public class Veiculo {
     // Atributos
-    private String idCliente;   
+    private int id;   
     private String modelo;
-    private int numChassi;
-    private double quilometragem;
-    private double preco;
     private String cor;
     private int anoFabricacao;
-    private String status;
-    DecimalFormat df = new DecimalFormat("0.00");
+    private String idCliente;
 
-    // Construtor
-    public Veiculo(String idCliente, String modelo, int numChassi, double quilometragem, double preco, String cor, int anoFabricacao, String status) {
-        this.idCliente =idCliente;
+    // Construtor completo
+    public Veiculo(int id, String modelo, String cor, int anoFabricacao, String idCliente) {
+        this.id = id;
         this.modelo = modelo;
-        this.numChassi = numChassi;
-        this.quilometragem = quilometragem;
-        this.preco = preco;
         this.cor = cor;
         this.anoFabricacao = anoFabricacao;
-        this.status = status;
+        this.idCliente = idCliente;
+    }
+    
+    // Construtor sem ID (para novos veículos)
+    public Veiculo(String modelo, String cor, int anoFabricacao, String idCliente) {
+        this.modelo = modelo;
+        this.cor = cor;
+        this.anoFabricacao = anoFabricacao;
+        this.idCliente = idCliente;
     }   
 
     // Getters e Setters
-    public String getIdCliente(){
-        return idCliente;
+    public int getId() {
+        return id;
     }
 
-    public void setIdCliente(String idCliente){
-        this.idCliente = idCliente;
+    public void setId(int id) {
+        this.id = id;
     }
+
     public String getModelo() {
         return modelo;
     }
 
     public void setModelo(String modelo) {
         this.modelo = modelo;
-    }
-
-    public int getNumChassi() {
-        return numChassi;
-    }
-
-    public void setNumChassi(int numChassi) {
-        this.numChassi = numChassi;
-    }
-
-    public double getQuilometragem() {
-        return quilometragem;
-    }
-
-    public void setQuilometragem(double quilometragem) {
-        this.quilometragem = quilometragem;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(double preco) {
-        this.preco = preco;
     }
 
     public String getCor() {
@@ -81,24 +58,21 @@ public class Veiculo {
         this.anoFabricacao = anoFabricacao;
     }
 
-    public String getStatus() {
-        return status;
+    public String getIdCliente() {
+        return idCliente;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 
     // Método auxiliar
     @Override
     public String toString() {
-        return "id: " + idCliente +
+        return "ID: " + id +
                 "\nModelo: " + modelo +
-                "\nNúmero do Chassi: " + numChassi +
-                "\nQuilometragem: " + quilometragem +
-                "\nPreço: " + df.format(preco) +
                 "\nCor: " + cor +
                 "\nAno de Fabricação: " + anoFabricacao +
-                "\nStatus: " + status;
+                "\nCliente ID: " + idCliente;
     }
 }

@@ -1,36 +1,28 @@
 package com.paintspray.model;
 
+/**
+ * Classe que representa o usuário proprietário da oficina.
+ * Sistema monousuário - apenas o dono da oficina utiliza.
+ */
 public class Usuario {
 
-	private String id;
-	private String nome;
-	private String email;
-	private String senha;
-	private String senhaHash;
+    private String id;
+    private String nome;
+    private String email;
+    private String senha;
 
-	public Usuario() {
+    public Usuario() {
     }
 
-	/**
-     * Construtor para criação de novo usuário (Proprietário).
+    /**
+     * Construtor para criação de usuário.
      */
-	public Usuario(String id, String nome, String email, String senha) {
-		this.id = id;
-		this.nome = nome;
-		this.email = email;
-		this.senha = senha;
-	}
-
-	/**
-     * Construtor completo (ex: carregamento do banco de dados).
-     */
-	public Usuario(String id, String nome, String email, String senha, String senhaHash) {
-		this.id = id;
-		this.nome = nome;
-		this.email = email;
-		this.senha = senha;
-		this.senhaHash = senhaHash;
-	}
+    public Usuario(String id, String nome, String email, String senha) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+    }
 
 	public String getId() {
 		return id;
@@ -56,25 +48,16 @@ public class Usuario {
 		this.email = email;
 	}
 
-	public String getSenha() {
-		return senha;
-	}
+    public String getSenha() {
+        return senha;
+    }
 
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
-	public String getSenhaHash() {
-		return senhaHash;
-	}
-
-	public void setSenhaHash(String senhaHash) {
-		this.senhaHash = senhaHash;
-	}
-
-	@Override
-	public String toString() {
-		return "Usuário (Proprietário): " + nome + " [" + email + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "Usuário: " + nome + " [" + email + "]";
+    }
 }
