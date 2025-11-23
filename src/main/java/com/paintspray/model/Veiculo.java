@@ -1,4 +1,4 @@
-package com.ufersa.sistemalavajato.model;
+package com.paintspray.model;
 import java.text.DecimalFormat;
 
 public class Veiculo {

@@ -1,13 +1,12 @@
-package com.ufersa.sistemalavajato.service;
+package com.paintspray.service;
 
-import com.ufersa.sistemalavajato.model.Cliente;
-import com.ufersa.sistemalavajato.model.Servico;
-import com.ufersa.sistemalavajato.repository.ClienteRepository;
-import com.ufersa.sistemalavajato.repository.ServicoRepository;
-import com.ufersa.sistemalavajato.repository.VeiculoRepository; 
+import com.paintspray.model.Cliente;
+import com.paintspray.model.Servico;
+import com.paintspray.repository.ClienteRepository;
+import com.paintspray.repository.ServicoRepository;
+import com.paintspray.repository.VeiculoRepository; 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Camada de Serviço para a entidade Cliente.
@@ -65,21 +64,12 @@ public class ClienteService {
         if (!telefone.matches("^\\+?\\d{8,15}$")) 
             throw new IllegalArgumentException( "Telefone inválido. Deve conter apenas dígitos (8–15 caracteres), " + "podendo começar com '+' para código de país.");
 
-        if (email == null || !Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email)) 
-            throw new IllegalArgumentException("Formato de e-mail inválido.");
-
-        if (senha == null || senha.length() < 6)
-            throw new IllegalArgumentException("A senha deve ter no mínimo 6 caracteres.");
-
         // Regra de negócio: não permitir cadastro com ID ou email duplicado
         if (repository.findById(id) != null)
             throw new IllegalArgumentException("Já existe um cliente com este ID.");
 
-        if (repository.findByEmail(email) != null)
-            throw new IllegalArgumentException("Já existe um cliente com este e-mail.");
-
         // Se tudo estiver válido, cria o objeto e delega a persistência ao repositório
-        Cliente novoCliente = new Cliente(id, nome, email, senha, endereco, telefone);
+        Cliente novoCliente = new Cliente(id, nome, endereco, telefone);
         repository.save(novoCliente);
     }
     
@@ -109,15 +99,14 @@ public class ClienteService {
         // Primeiro, busca o cliente para garantir que ele existe
         Cliente cliente = buscarClientePorId(id);
 
+        if (novoNome == null || novoNome.trim().isEmpty()) throw new IllegalArgumentException("Nome inválido");
+        if (novoEndereco == null || novoEndereco.trim().isEmpty()) throw new IllegalArgumentException("Endereço inválido");
+        if (novoTelefone == null || novoTelefone.trim().isEmpty()) throw new IllegalArgumentException("Telefone inválido");
 
         // Atualiza o objeto com os novos dados
         cliente.setNome(novoNome);
-        cliente.setEmail(novoEmail);
         cliente.setEndereco(novoEndereco);
         cliente.setNumeroTelefone(novoTelefone);
-        if (novaSenha != null && !novaSenha.isEmpty()) {
-            cliente.setSenha(novaSenha);
-        }
 
         repository.update(cliente);
     }

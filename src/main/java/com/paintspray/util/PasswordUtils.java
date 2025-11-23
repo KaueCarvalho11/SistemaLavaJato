@@ -1,4 +1,4 @@
-package com.ufersa.sistemalavajato.util;
+package com.paintspray.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -1,9 +1,9 @@
-package com.ufersa.sistemalavajato.service;
+package com.paintspray.service;
 
-import com.ufersa.sistemalavajato.model.Funcionario;
-import com.ufersa.sistemalavajato.model.Servico;
-import com.ufersa.sistemalavajato.repository.FuncionarioRepository;
-import com.ufersa.sistemalavajato.repository.ServicoRepository;
+import com.paintspray.model.Funcionario;
+import com.paintspray.model.Servico;
+import com.paintspray.repository.FuncionarioRepository;
+import com.paintspray.repository.ServicoRepository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -54,17 +54,6 @@ public class FuncionarioService {
 
         Funcionario novoFuncionario = new Funcionario(id, nome, email, senha);
         repository.save(novoFuncionario);
-    }
-
-    //Realiza o login de um funcionário.
-    public Funcionario realizarLogin(String email, String senha) throws SQLException {
-        Funcionario funcionario = repository.EncontrarPorEmail(email);
-
-        if (funcionario != null && funcionario.getSenha().equals(senha)) {
-            return funcionario;
-        }
-
-        return null;
     }
 
     //Lista todos os funcionários cadastrados.

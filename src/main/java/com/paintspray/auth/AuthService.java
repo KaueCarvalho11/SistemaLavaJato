@@ -1,11 +1,11 @@
-package com.ufersa.sistemalavajato.auth;
+package com.paintspray.auth;
 
-import com.ufersa.sistemalavajato.enums.TipoUsuario;
-import com.ufersa.sistemalavajato.model.Cliente;
-import com.ufersa.sistemalavajato.model.Usuario;
-import com.ufersa.sistemalavajato.repository.UsuarioRepository;
-import com.ufersa.sistemalavajato.util.PasswordUtils;
-import com.ufersa.sistemalavajato.util.ValidationUtils;
+import com.paintspray.enums.TipoUsuario;
+import com.paintspray.model.Cliente;
+import com.paintspray.model.Usuario;
+import com.paintspray.repository.UsuarioRepository;
+import com.paintspray.util.PasswordUtils;
+import com.paintspray.util.ValidationUtils;
 
 import java.sql.SQLException;
 

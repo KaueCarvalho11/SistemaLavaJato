@@ -1,9 +1,9 @@
-package com.ufersa.sistemalavajato.service;
+package com.paintspray.service;
 
-import com.ufersa.sistemalavajato.repository.ServicoRepository;
-import com.ufersa.sistemalavajato.model.Servico;
-import com.ufersa.sistemalavajato.model.Veiculo;
-import com.ufersa.sistemalavajato.model.Funcionario;
+import com.paintspray.repository.ServicoRepository;
+import com.paintspray.model.Servico;
+import com.paintspray.model.Veiculo;
+import com.paintspray.model.Funcionario;
 import java.sql.SQLException;
 import java.util.List;
 

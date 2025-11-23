@@ -1,6 +1,6 @@
-package com.ufersa.sistemalavajato.repository;
+package com.paintspray.repository;
 
-import com.ufersa.sistemalavajato.model.Veiculo;
+import com.paintspray.model.Veiculo;
 import java.sql.SQLException;
 import java.util.List;
 

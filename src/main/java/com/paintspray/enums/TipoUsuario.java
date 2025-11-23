@@ -1,4 +1,4 @@
-package com.ufersa.sistemalavajato.enums;
+package com.paintspray.enums;
 
 /**
  * Enum para definir os tipos de usuário do sistema.

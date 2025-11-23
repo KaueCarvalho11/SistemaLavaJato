@@ -1,4 +1,4 @@
-package com.ufersa.sistemalavajato.util;
+package com.paintspray.util;
 
 import java.util.regex.Pattern;
 

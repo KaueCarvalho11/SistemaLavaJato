@@ -1,6 +1,6 @@
-package com.ufersa.sistemalavajato.repository;
+package com.paintspray.repository;
 
-import com.ufersa.sistemalavajato.config.DatabaseConnection;
+import com.paintspray.config.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

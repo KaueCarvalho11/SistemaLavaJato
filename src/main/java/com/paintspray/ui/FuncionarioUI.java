@@ -1,8 +1,8 @@
-package com.ufersa.sistemalavajato.ui;
+package com.paintspray.ui;
 
-import com.ufersa.sistemalavajato.model.Funcionario;
-import com.ufersa.sistemalavajato.model.Servico;
-import com.ufersa.sistemalavajato.service.ServicoService;
+import com.paintspray.model.Funcionario;
+import com.paintspray.model.Servico;
+import com.paintspray.service.ServicoService;
 
 import java.sql.SQLException;
 import java.util.InputMismatchException;
@@ -185,7 +185,9 @@ public class FuncionarioUI {
         if (concluidos.isEmpty()) {
             System.out.println("Você ainda não concluiu nenhum serviço.");
         } else {
-            concluidos.forEach(this::printServicoFormatado);
+            for (Servico s: concluidos){
+            System.out.println(s);
+            }
         }
     }
     private void printServicoFormatado(Servico s) {

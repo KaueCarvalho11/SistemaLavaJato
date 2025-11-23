@@ -1,13 +1,13 @@
-package com.ufersa.sistemalavajato.ui;
+package com.paintspray.ui;
 
-import com.ufersa.sistemalavajato.model.Cliente;
-import com.ufersa.sistemalavajato.model.Funcionario;
-import com.ufersa.sistemalavajato.model.Servico;
-import com.ufersa.sistemalavajato.model.Veiculo;
-import com.ufersa.sistemalavajato.service.ClienteService;
-import com.ufersa.sistemalavajato.service.FuncionarioService;
-import com.ufersa.sistemalavajato.service.ServicoService;
-import com.ufersa.sistemalavajato.service.VeiculoService;
+import com.paintspray.model.Cliente;
+import com.paintspray.model.Funcionario;
+import com.paintspray.model.Servico;
+import com.paintspray.model.Veiculo;
+import com.paintspray.service.ClienteService;
+import com.paintspray.service.FuncionarioService;
+import com.paintspray.service.ServicoService;
+import com.paintspray.service.VeiculoService;
 
 import java.sql.SQLException;
 import java.util.InputMismatchException;
@@ -118,22 +118,32 @@ public class ClienteUI {
      * Método para cadastrar um novo veículo associado ao cliente logado.
      **/
     private void adicionarVeiculo() throws SQLException {
-        System.out.println("\n--- CADASTRAR NOVO VEÍCULO ---");
-        System.out.print("Número do Chassi: ");
-        int chassi = sc.nextInt();
-        sc.nextLine();
-        System.out.print("Modelo (ex: Fiat Uno): ");
-        String modelo = sc.nextLine();
-        System.out.print("Cor: ");
-        String cor = sc.nextLine();
-        System.out.print("Ano de Fabricação: ");
-        int ano = sc.nextInt();
-        sc.nextLine();
+    System.out.println("\n--- CADASTRAR NOVO VEÍCULO ---");
+    System.out.print("Número do Chassi: ");
+    int chassi = sc.nextInt();
+    sc.nextLine(); // Limpa o buffer
 
-        Veiculo novoVeiculo = new Veiculo(clienteLogado.getId(), modelo, chassi, 0, 0, cor, ano, "Disponível");
-        veiculoService.cadastrarVeiculo(novoVeiculo);
-        System.out.println("Veículo cadastrado com sucesso!");
-    }
+    System.out.print("Quilometragem: ");
+    double quilometragem = sc.nextDouble();
+    sc.nextLine(); // Limpa o buffer
+
+    System.out.print("Preço: ");
+    double preco = sc.nextDouble();
+    sc.nextLine(); // Limpa o buffer
+
+    System.out.print("Modelo (ex: Fiat Uno): ");
+    String modelo = sc.nextLine();
+
+    System.out.print("Cor: ");
+    String cor = sc.nextLine();
+
+    System.out.print("Ano de Fabricação: ");
+    int ano = sc.nextInt();
+    sc.nextLine(); // Limpa o buffer
+
+    veiculoService.cadastrarVeiculo(clienteLogado.getId(), modelo, chassi, quilometragem, preco, cor, ano, "disponivel");
+    System.out.println("Veículo cadastrado com sucesso!");
+}
 
     /**
      * Método para remover um veículo do cliente logado.
@@ -169,8 +179,8 @@ public class ClienteUI {
         if (veiculos.isEmpty()) {
             System.out.println("Você não possui veículos cadastrados.");
         } else {
-            veiculos.forEach(v -> System.out.printf("Modelo: %s, Chassi: %d, Cor: %s, Ano: %d\n",
-                    v.getModelo(), v.getNumChassi(), v.getCor(), v.getAnoFabricacao()));
+            veiculos.forEach(v -> System.out.printf("Modelo: %s, Chassi: %d, Cor: %s, Ano: %d, Quilometragem: %.2f, Preco: R$%.2f\n", 
+                    v.getModelo(), v.getNumChassi(), v.getCor(), v.getAnoFabricacao(), v.getQuilometragem(), v.getPreco()));
         }
     }
 

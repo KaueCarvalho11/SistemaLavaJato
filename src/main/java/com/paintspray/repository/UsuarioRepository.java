@@ -1,9 +1,9 @@
-package com.ufersa.sistemalavajato.repository;
+package com.paintspray.repository;
 
-import com.ufersa.sistemalavajato.enums.TipoUsuario;
-import com.ufersa.sistemalavajato.model.Cliente;
-import com.ufersa.sistemalavajato.model.Funcionario;
-import com.ufersa.sistemalavajato.model.Usuario;
+import com.paintspray.enums.TipoUsuario;
+import com.paintspray.model.Cliente;
+import com.paintspray.model.Funcionario;
+import com.paintspray.model.Usuario;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

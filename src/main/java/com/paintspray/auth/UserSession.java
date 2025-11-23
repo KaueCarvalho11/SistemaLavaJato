@@ -1,7 +1,7 @@
-package com.ufersa.sistemalavajato.auth;
+package com.paintspray.auth;
 
-import com.ufersa.sistemalavajato.enums.TipoUsuario;
-import com.ufersa.sistemalavajato.model.Usuario;
+import com.paintspray.enums.TipoUsuario;
+import com.paintspray.model.Usuario;
 
 /**
  * Classe para gerenciar a sessão do usuário logado.

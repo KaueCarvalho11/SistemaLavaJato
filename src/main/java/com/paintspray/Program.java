@@ -1,12 +1,12 @@
-package com.ufersa.sistemalavajato;
+package com.paintspray;
 
-import com.ufersa.sistemalavajato.service.ClienteService;
-import com.ufersa.sistemalavajato.service.FuncionarioService;
-import com.ufersa.sistemalavajato.ui.ClienteUI;
-import com.ufersa.sistemalavajato.ui.FuncionarioUI;
-import com.ufersa.sistemalavajato.auth.AuthService;
-import com.ufersa.sistemalavajato.auth.UserSession;
-import com.ufersa.sistemalavajato.model.Funcionario;
+import com.paintspray.service.ClienteService;
+import com.paintspray.service.FuncionarioService;
+import com.paintspray.ui.ClienteUI;
+import com.paintspray.ui.FuncionarioUI;
+import com.paintspray.auth.AuthService;
+import com.paintspray.auth.UserSession;
+import com.paintspray.model.Funcionario;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -100,7 +100,7 @@ public class Program {
 
                             } else if (userSession.isCliente()) {
                                 ClienteUI clienteUI = new ClienteUI(
-                                        (com.ufersa.sistemalavajato.model.Cliente) userSession.getCurrentUser());
+                                        (com.paintspray.model.Cliente) userSession.getCurrentUser());
                                 clienteUI.menu();
                                 authService.logout();
                                 System.out.println("Você foi deslogado.");

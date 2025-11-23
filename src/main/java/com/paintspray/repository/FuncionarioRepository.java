@@ -1,7 +1,7 @@
-package com.ufersa.sistemalavajato.repository;
+package com.paintspray.repository;
 
-import com.ufersa.sistemalavajato.model.Funcionario;
-import com.ufersa.sistemalavajato.util.PasswordUtils;
+import com.paintspray.model.Funcionario;
+import com.paintspray.util.PasswordUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
