@@ -1,0 +1,360 @@
+/* ====================================
+   Paint-Spray Design System
+   Minimalista | Foco em Funcionalidade
+   ==================================== */
+
+/* === CORES === */
+:root {
+    /* Paleta Principal */
+    -fx-background: #FFFFFF;
+    -fx-background-off-white: #F4F6F8;
+    -fx-dark-navy: #2C3E50;
+    -fx-charcoal: #34495E;
+    -fx-automotive-blue: #2980B9;
+    -fx-vibrant-orange: #E67E22;
+
+    /* Estados */
+    -fx-success: #27AE60;
+    -fx-warning: #F39C12;
+    -fx-danger: #E74C3C;
+    -fx-info: #3498DB;
+
+    /* Textos */
+    -fx-text-primary: #2C3E50;
+    -fx-text-secondary: #7F8C8D;
+    -fx-text-light: #FFFFFF;
+}
+
+/* === LAYOUT GERAL === */
+.root {
+    -fx-background-color: -fx-background-off-white;
+    -fx-font-family: "Segoe UI", "Roboto", "Open Sans", sans-serif;
+    -fx-font-size: 14px;
+}
+
+/* === MENU LATERAL === */
+.sidebar {
+    -fx-background-color: -fx-dark-navy;
+    -fx-padding: 0;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-light;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 20px;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+    -fx-background-radius: 0;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-button.active {
+    -fx-background-color: -fx-automotive-blue;
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-color: -fx-vibrant-orange;
+}
+
+/* === BOTÕES === */
+.button-primary {
+    -fx-background-color: #2980B9;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #1F618D;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #154360;
+}
+
+.button-success {
+    -fx-background-color: #27AE60;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.button-success:hover {
+    -fx-background-color: #229954;
+}
+
+.button-danger {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: #C0392B;
+}
+
+.button-secondary {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #2980B9;
+    -fx-border-color: #2980B9;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #E8F4F8;
+    -fx-text-fill: #1F618D;
+    -fx-border-color: #1F618D;
+}
+
+/* Floating Action Button (FAB) */
+.fab {
+    -fx-background-color: #E67E22;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
+}
+
+.fab:hover {
+    -fx-background-color: #D35400;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 20, 0, 0, 7);
+}
+
+/* === CARDS === */
+.card-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+    -fx-padding: 20px;
+}
+
+.card-pane:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 15, 0, 0, 3);
+}
+
+.kpi-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+    -fx-padding: 15px;
+    -fx-alignment: center-left;
+}
+
+/* Cards de Status do Kanban */
+.status-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+    -fx-padding: 12px;
+    -fx-cursor: hand;
+}
+
+.status-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 12, 0, 0, 3);
+}
+
+.status-card.pendente {
+    -fx-border-color: -fx-warning;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.status-card.em-andamento {
+    -fx-border-color: -fx-info;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.status-card.aguardando-pagamento {
+    -fx-border-color: -fx-vibrant-orange;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.status-card.finalizado {
+    -fx-border-color: -fx-success;
+    -fx-border-width: 0 0 0 4px;
+}
+
+/* === FORMULÁRIOS === */
+.text-field,
+.text-area,
+.combo-box,
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #BDC3C7;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused,
+.text-area:focused,
+.combo-box:focused {
+    -fx-border-color: -fx-automotive-blue;
+    -fx-border-width: 2px;
+}
+
+.label {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 14px;
+}
+
+.label-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.label-subtitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+/* === TABELAS === */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.table-view .column-header {
+    -fx-background-color: -fx-background-off-white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(41, 128, 185, 0.1);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(41, 128, 185, 0.2);
+}
+
+/* === LOGIN === */
+.login-container {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 25, 0, 0, 5);
+    -fx-padding: 40px;
+    -fx-alignment: center;
+}
+
+.login-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-navy;
+}
+
+/* === KANBAN === */
+.kanban-column {
+    -fx-background-color: rgba(189, 195, 199, 0.2);
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+}
+
+.kanban-column-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+    -fx-padding: 10px;
+}
+
+/* === SCROLLBAR === */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: rgba(149, 165, 166, 0.5);
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(149, 165, 166, 0.7);
+}
+
+/* === PROGRESS BAR === */
+.progress-bar {
+    -fx-background-radius: 10px;
+}
+
+.progress-bar .bar {
+    -fx-background-color: -fx-automotive-blue;
+    -fx-background-radius: 10px;
+}
+
+.progress-bar.success .bar {
+    -fx-background-color: -fx-success;
+}
+
+.progress-bar.warning .bar {
+    -fx-background-color: -fx-warning;
+}
+
+/* === BADGES === */
+.badge {
+    -fx-background-radius: 12px;
+    -fx-padding: 4px 12px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.badge-pendente {
+    -fx-background-color: -fx-warning;
+    -fx-text-fill: white;
+}
+
+.badge-em-andamento {
+    -fx-background-color: -fx-info;
+    -fx-text-fill: white;
+}
+
+.badge-aguardando {
+    -fx-background-color: -fx-vibrant-orange;
+    -fx-text-fill: white;
+}
+
+.badge-finalizado {
+    -fx-background-color: -fx-success;
+    -fx-text-fill: white;
+}
+
+.badge-cancelado {
+    -fx-background-color: -fx-danger;
+    -fx-text-fill: white;
+}
+
+/* === SPLIT PANE === */
+.split-pane {
+    -fx-background-color: transparent;
+}
+
+.split-pane-divider {
+    -fx-background-color: -fx-background-off-white;
+}

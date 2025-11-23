@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.paintspray.controller.LoginController"
+           prefHeight="720" prefWidth="1280"
+           style="-fx-background-color: linear-gradient(to bottom right, #2C3E50, #34495E);">
+
+    <!-- Container do formulário de login -->
+    <VBox styleClass="login-container" alignment="CENTER" spacing="25" maxWidth="400" maxHeight="500">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+
+        <!-- Logo/Ícone -->
+        <FontIcon iconLiteral="mdi2c-car-wash" iconSize="64" iconColor="#2980B9"/>
+
+        <!-- Título -->
+        <Text text="Paint-Spray" styleClass="login-title"/>
+        <Text text="Sistema de Gestão de Oficina" style="-fx-fill: #7F8C8D; -fx-font-size: 14px;"/>
+
+        <!-- Formulário -->
+        <VBox spacing="15" VBox.vgrow="ALWAYS">
+            <VBox spacing="5">
+                <Label text="Email:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="emailField" promptText="seu@email.com" 
+                          prefHeight="40" style="-fx-font-size: 14px;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Senha:" style="-fx-font-weight: bold;"/>
+                <PasswordField fx:id="senhaField" promptText="••••••••" 
+                              prefHeight="40" style="-fx-font-size: 14px;"/>
+            </VBox>
+        </VBox>
+
+        <!-- Botões -->
+        <VBox spacing="10" alignment="CENTER">
+            <Button fx:id="loginButton" text="Entrar" onAction="#handleLogin" 
+                   styleClass="button-primary" prefWidth="320" prefHeight="45"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2l-login" iconSize="18"/>
+                </graphic>
+            </Button>
+
+            <Button text="Primeiro Acesso" onAction="#handleCadastro" 
+                   styleClass="button-secondary" prefWidth="320" prefHeight="40">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2a-account-plus" iconSize="16"/>
+                </graphic>
+            </Button>
+        </VBox>
+
+        <!-- Rodapé -->
+        <Text text="v1.0.0 - Paint-Spray © 2025" 
+              style="-fx-fill: #95A5A6; -fx-font-size: 12px;"/>
+    </VBox>
+
+</StackPane>

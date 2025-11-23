@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.paintspray.controller.NovaOrdemController"
+      fx:id="wizardContainer"
+      spacing="0" prefWidth="600" prefHeight="500"
+      style="-fx-background-color: white;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #2980B9; -fx-padding: 20;">
+        <FontIcon iconLiteral="mdi2c-clipboard-plus" iconSize="32" iconColor="white"/>
+        <Label text="Nova Ordem de Serviço" 
+               style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- Progress Indicator -->
+    <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20; -fx-background-color: #F4F6F8;">
+        <Label fx:id="stepLabel" text="Etapa 1 de 3: Cliente e Veículo" 
+               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Wizard Content -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: white;">
+        <VBox spacing="20" style="-fx-padding: 30;">
+
+            <!-- STEP 1: Cliente e Veículo -->
+            <GridPane fx:id="step1Grid" hgap="15" vgap="15">
+                <Label text="Cliente:" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+                       style="-fx-font-weight: bold;"/>
+                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <ComboBox fx:id="clienteCombo" prefWidth="350" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="novoClienteBtn" text="+" onAction="#handleNovoCliente" 
+                           styleClass="button-secondary" prefWidth="40"/>
+                </HBox>
+
+                <Label text="Veículo:" GridPane.columnIndex="0" GridPane.rowIndex="1" 
+                       style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="veiculoCombo" prefWidth="400" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Selecione primeiro o cliente para carregar seus veículos" 
+                       GridPane.columnIndex="1" GridPane.rowIndex="2"
+                       style="-fx-text-fill: #7F8C8D; -fx-font-size: 12px; -fx-font-style: italic;"/>
+            </GridPane>
+
+            <!-- STEP 2: Serviço -->
+            <GridPane fx:id="step2Grid" hgap="15" vgap="15" visible="false" managed="false">
+                <Label text="Tipo de Serviço:" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+                       style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="tipoServicoCombo" prefWidth="400" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Descrição:" GridPane.columnIndex="0" GridPane.rowIndex="1" 
+                       style="-fx-font-weight: bold;" GridPane.valignment="TOP">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+                </Label>
+                <TextArea fx:id="descricaoArea" prefRowCount="5" wrapText="true"
+                         promptText="Descreva os detalhes do serviço a ser realizado..."
+                         GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="400"/>
+
+                <Label text="Ex: Pintura completa da carenagem, incluindo tanque e paralamas" 
+                       GridPane.columnIndex="1" GridPane.rowIndex="2"
+                       style="-fx-text-fill: #7F8C8D; -fx-font-size: 12px; -fx-font-style: italic;"/>
+            </GridPane>
+
+            <!-- STEP 3: Financeiro -->
+            <GridPane fx:id="step3Grid" hgap="15" vgap="15" visible="false" managed="false">
+                <Label text="Preço (R$):" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+                       style="-fx-font-weight: bold;"/>
+                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="R$" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+                        <padding>
+                            <Insets top="5"/>
+                        </padding>
+                    </Label>
+                    <TextField fx:id="precoField" promptText="0.00" prefWidth="150"/>
+                </HBox>
+
+                <Label text="Forma de Pagamento:" GridPane.columnIndex="0" GridPane.rowIndex="1" 
+                       style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="formaPagamentoCombo" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2" 
+                     style="-fx-background-color: #E8F5E9; -fx-padding: 15; -fx-background-radius: 8;">
+                    <HBox spacing="5" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="mdi2i-information" iconSize="16" iconColor="#27AE60"/>
+                        <Label text="Resumo da Ordem" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Label text="• Status inicial: PENDENTE" style="-fx-text-fill: #555;"/>
+                    <Label text="• Você poderá atualizar o status no Dashboard" style="-fx-text-fill: #555;"/>
+                    <Label text="• O cliente será notificado quando finalizado" style="-fx-text-fill: #555;"/>
+                </VBox>
+            </GridPane>
+
+        </VBox>
+    </ScrollPane>
+
+    <Separator/>
+
+    <!-- Footer: Botões de Navegação -->
+    <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 20; -fx-background-color: #F4F6F8;">
+        <Button text="Cancelar" onAction="#handleCancelar" styleClass="button-secondary" prefWidth="100"/>
+        
+        <Region HBox.hgrow="ALWAYS"/>
+        
+        <Button fx:id="voltarBtn" text="Voltar" onAction="#handleVoltar" 
+               styleClass="button-secondary" prefWidth="100">
+            <graphic>
+                <FontIcon iconLiteral="mdi2a-arrow-left" iconSize="16"/>
+            </graphic>
+        </Button>
+        
+        <Button fx:id="proximoBtn" text="Próximo" onAction="#handleProximo" 
+               styleClass="button-primary" prefWidth="100">
+            <graphic>
+                <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="16"/>
+            </graphic>
+        </Button>
+        
+        <Button fx:id="finalizarBtn" text="Finalizar" onAction="#handleFinalizar" 
+               styleClass="button-success" prefWidth="120" visible="false">
+            <graphic>
+                <FontIcon iconLiteral="mdi2c-check-bold" iconSize="16"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+</VBox>
