@@ -1,6 +1,8 @@
-package com.paintspray.model;
+package com.ufersa.sistemalavajato.model;
 
-public class Usuario {
+import com.ufersa.sistemalavajato.enums.TipoUsuario;
+
+public abstract class Usuario {
 
 	private String id;
 	private String nome;
@@ -8,12 +10,6 @@ public class Usuario {
 	private String senha;
 	private String senhaHash;
 
-	public Usuario() {
-    }
-
-	/**
-     * Construtor para criação de novo usuário (Proprietário).
-     */
 	public Usuario(String id, String nome, String email, String senha) {
 		this.id = id;
 		this.nome = nome;
@@ -21,9 +17,6 @@ public class Usuario {
 		this.senha = senha;
 	}
 
-	/**
-     * Construtor completo (ex: carregamento do banco de dados).
-     */
 	public Usuario(String id, String nome, String email, String senha, String senhaHash) {
 		this.id = id;
 		this.nome = nome;
@@ -31,6 +24,14 @@ public class Usuario {
 		this.senha = senha;
 		this.senhaHash = senhaHash;
 	}
+
+	/**
+	 * Obtém o tipo do usuário.
+	 * Deve ser implementado pelas classes filhas.
+	 * 
+	 * @return TipoUsuario correspondente
+	 */
+	public abstract TipoUsuario getTipoUsuario();
 
 	public String getId() {
 		return id;
@@ -74,7 +75,9 @@ public class Usuario {
 
 	@Override
 	public String toString() {
-		return "Usuário (Proprietário): " + nome + " [" + email + "]";
+		return "Id:" + id +
+				"\nNome:" + nome + 
+				"\nEmail: " + email;
 	}
 
 }

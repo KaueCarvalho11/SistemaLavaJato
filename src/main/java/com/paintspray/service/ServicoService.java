@@ -14,6 +14,14 @@ public class ServicoService {
 
     private final ServicoRepository servicoRepository;
 
+    // Tipos permitidos
+    private static final List<String> TIPOS_PERMITIDOS = List.of(
+            "Pintura Completa",
+            "Retoque",
+            "Polimento",
+            "Funilaria"
+    );
+
     public ServicoService() {
         this.servicoRepository = new ServicoRepository();
     }
@@ -23,9 +31,16 @@ public class ServicoService {
      */
     public void cadastrarServico(String tipo, String descricao, double preco,
             Veiculo veiculo, Funcionario funcionario, String metodoPagamento) throws SQLException {
-        // Validações básicas
-        if (tipo == null || tipo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo do serviço não pode ser vazio");
+
+        // Validação do tipo
+        if (!TIPOS_PERMITIDOS.contains(tipo)) {
+            throw new IllegalArgumentException(
+                    "Tipo inválido. Tipos permitidos: Pintura Completa, Retoque, Polimento, Funilaria"
+            );
+        }
+
+        if (descricao == null || descricao.trim().isEmpty()) {
+            throw new IllegalArgumentException("Descrição não pode ser vazia");
         }
         if (preco <= 0) {
             throw new IllegalArgumentException("Preço deve ser maior que zero");
@@ -38,9 +53,6 @@ public class ServicoService {
         }
         if (metodoPagamento == null || metodoPagamento.trim().isEmpty()) {
             throw new IllegalArgumentException("Método de pagamento não pode ser vazio");
-        }
-        if (descricao == null || descricao.trim().isEmpty()) {
-            throw new IllegalArgumentException("Descrição não pode ser vazia");
         }
 
         // Cria o serviço
@@ -56,18 +68,15 @@ public class ServicoService {
      * Inicia um serviço.
      */
     public void iniciarServico(int servicoId) throws SQLException {
-        // Busca o serviço e verifica se existe
         Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
-        // Verifica se pode ser iniciado
         if (!"PENDENTE".equals(servico.getStatus())) {
             throw new IllegalStateException("Só é possível iniciar serviços pendentes");
         }
 
-        // Inicia o serviço
         servicoRepository.iniciarServico(servicoId);
     }
 
@@ -75,18 +84,15 @@ public class ServicoService {
      * Cancela um serviço.
      */
     public void cancelarServico(int servicoId) throws SQLException {
-        // Busca o serviço e verifica se existe
         Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
-        // Verifica se pode ser cancelado
         if ("CONCLUIDO".equals(servico.getStatus())) {
             throw new IllegalStateException("Não é possível cancelar serviços concluídos");
         }
 
-        // Cancela o serviço
         servicoRepository.cancelarServico(servicoId);
     }
 
@@ -94,18 +100,15 @@ public class ServicoService {
      * Conclui um serviço.
      */
     public void concluirServico(int servicoId) throws SQLException {
-        // Busca o serviço e verifica se existe
         Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
-        // Verifica se pode ser concluído
         if (!"EM_ANDAMENTO".equals(servico.getStatus())) {
             throw new IllegalStateException("Só é possível concluir serviços em andamento");
         }
 
-        // Conclui o serviço
         servicoRepository.concluirServico(servicoId);
     }
 
@@ -114,26 +117,26 @@ public class ServicoService {
      */
     public void atualizarServico(int servicoId, String tipo, String descricao,
             double preco, String formaPagamento) throws SQLException {
-        // Busca o serviço
+
         Servico servico = servicoRepository.findById(String.valueOf(servicoId));
         if (servico == null) {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
-        // Verifica se o serviço pode ser atualizado
         if ("CONCLUIDO".equals(servico.getStatus())) {
             throw new IllegalStateException("Não é possível atualizar serviços concluídos");
         }
 
-        // Verifica se o serviço pode ser atualizado
-        if ("CONCLUIDO".equals(servico.getStatus())) {
-            throw new IllegalStateException("Não é possível atualizar serviços concluídos");
-        }
-
-        // Validações
+        // Validação e alteração do tipo
         if (tipo != null && !tipo.trim().isEmpty()) {
+            if (!TIPOS_PERMITIDOS.contains(tipo)) {
+                throw new IllegalArgumentException(
+                        "Tipo inválido. Tipos permitidos: Pintura Completa, Retoque, Polimento, Funilaria"
+                );
+            }
             servico.setTipo(tipo);
         }
+
         if (descricao != null) {
             servico.setDescricao(descricao);
         }
@@ -144,7 +147,6 @@ public class ServicoService {
             servico.setFormaPagamento(formaPagamento);
         }
 
-        // Atualiza no banco
         servicoRepository.update(servico);
     }
 
@@ -197,7 +199,6 @@ public class ServicoService {
     }
 
     /**
-     * /**
      * Exibe detalhes de um serviço específico.
      */
     public Servico exibirServicoAtual(int servicoId) throws SQLException {
@@ -217,7 +218,6 @@ public class ServicoService {
             throw new IllegalArgumentException("Serviço não encontrado");
         }
 
-        // Só permite remoção de serviços pendentes ou cancelados
         if ("EM_ANDAMENTO".equals(servico.getStatus()) || "CONCLUIDO".equals(servico.getStatus())) {
             throw new IllegalStateException("Não é possível remover serviços em andamento ou concluídos");
         }
